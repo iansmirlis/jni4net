@@ -32,11 +32,9 @@ namespace net.sf.jni4net.test
     {
         protected JNIEnv env;
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public virtual void Setup()
         {
-            var sp = new FileIOPermission(PermissionState.Unrestricted);
-            sp.Assert();
             string prefix;
             if (Environment.CurrentDirectory.EndsWith("target"))
             {
@@ -46,7 +44,6 @@ namespace net.sf.jni4net.test
             {
                 prefix = "../../../";
             }
-            sp.Deny();
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
             BridgeSetup setup=new BridgeSetup (false){Verbose = true, Debug = true};
             setup.IgnoreJavaHome = true;
@@ -60,7 +57,7 @@ namespace net.sf.jni4net.test
             Bridge.RegisterAssembly(typeof(JavaInstanceFields).Assembly);
         }
 
-        [TestFixtureTearDown]
+        [OneTimeTearDown]
         public void TearDown()
         {
             //Assert.AreEqual(JNIResult.JNI_OK, vm.DestroyJavaVM());

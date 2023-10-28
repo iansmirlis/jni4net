@@ -6,6 +6,7 @@ using NUnit.Framework;
 
 namespace net.sf.jni4net.test
 {
+    /* todo: Binary serialization is not supported in .net core, maybe we can test something else?
     [TestFixture]
     public class Serialization : TestBase
     {
@@ -44,5 +45,5 @@ namespace net.sf.jni4net.test
             }
         }
 
-    }
+    }*/
 }

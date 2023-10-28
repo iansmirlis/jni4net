@@ -42,10 +42,9 @@ namespace net.sf.jni4net.test
         }
 
         [Test]
-        [ExpectedException(typeof(NullReferenceException), ExpectedMessage = "clr")]
         public void CallBackExceptionPropagate()
         {
-            JavaCallBack.callBackExceptionPropagate();
+            Assert.Throws<NullReferenceException>(() => JavaCallBack.callBackExceptionPropagate(), "clr");
         }
 
         [Test]
