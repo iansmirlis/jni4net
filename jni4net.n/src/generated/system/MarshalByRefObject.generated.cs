@@ -42,7 +42,6 @@ namespace System {
             global::System.Collections.Generic.List<global::net.sf.jni4net.jni.JNINativeMethod> methods = new global::System.Collections.Generic.List<global::net.sf.jni4net.jni.JNINativeMethod>();
             methods.Add(global::net.sf.jni4net.jni.JNINativeMethod.Create(@__type, "GetLifetimeService", "GetLifetimeService0", "()Lsystem/Object;"));
             methods.Add(global::net.sf.jni4net.jni.JNINativeMethod.Create(@__type, "InitializeLifetimeService", "InitializeLifetimeService1", "()Lsystem/Object;"));
-            methods.Add(global::net.sf.jni4net.jni.JNINativeMethod.Create(@__type, "CreateObjRef", "CreateObjRef2", "(Lsystem/Type;)Lsystem/Object;"));
             return methods;
         }
         
