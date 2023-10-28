@@ -53,11 +53,11 @@
             <artifactId>jni4net.tested.n</artifactId>
             <version>0.8.9.0</version>
         </dependency>
-        <dependency>
+        <!-- <dependency>
             <groupId>net.sf.jni4net</groupId>
             <artifactId>jni4net.test.j</artifactId>
             <version>0.8.9.0</version>
-        </dependency>
+        </dependency> -->
 	</dependencies>
     <build>
         <sourceDirectory>src</sourceDirectory>
@@ -77,7 +77,7 @@
                         <configuration>
                             <executable>dotnet</executable>
                             <arguments>
-                                <argument>build</argument>
+                                <argument>test</argument>
                                 <argument>src/jni4net.test.n.csproj</argument>
                             </arguments>
                         </configuration>

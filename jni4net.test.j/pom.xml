@@ -36,7 +36,7 @@
     </dependencies>
     <build>
         <plugins>
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.sonatype.nmaven.plugins</groupId>
                 <artifactId>maven-dotnet-compiler-plugin</artifactId>
                 <extensions>true</extensions>
@@ -44,7 +44,7 @@
                 <configuration>
                     <aditionalOptions>/unsafe /nowarn:1591</aditionalOptions>
                 </configuration>
-            </plugin>
+            </plugin> -->
             <plugin>
                <artifactId>maven-deploy-plugin</artifactId>
                <configuration>
