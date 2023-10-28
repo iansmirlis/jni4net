@@ -37,11 +37,11 @@ namespace net.sf.jni4net.jni
             Init();
         }*/
 
-        [EnvironmentPermission(SecurityAction.Assert, Unrestricted = true)]
-        [RegistryPermission(SecurityAction.Assert, Read = JRE_REGISTRY_KEY)]
-        [RegistryPermission(SecurityAction.Assert, Read = JDK_REGISTRY_KEY)]
-        [FileIOPermission(SecurityAction.Assert, Unrestricted = true)]
-        [SecurityPermission(SecurityAction.Assert, Flags = SecurityPermissionFlag.Execution|SecurityPermissionFlag.UnmanagedCode|SecurityPermissionFlag.SkipVerification)]
+        
+        
+        
+        
+        
         private static void Init()
         {
             if (!init)

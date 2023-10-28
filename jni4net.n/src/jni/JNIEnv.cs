@@ -26,7 +26,7 @@ using String=java.lang.String;
 
 namespace net.sf.jni4net.jni
 {
-    [SecurityPermission(SecurityAction.Assert, Flags = SecurityPermissionFlag.Execution | SecurityPermissionFlag.UnmanagedCode | SecurityPermissionFlag.SkipVerification)]
+    
     public unsafe partial class JNIEnv
     {
         #region JNI methods

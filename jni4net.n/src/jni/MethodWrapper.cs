@@ -18,8 +18,8 @@ using System.Security.Permissions;
 
 namespace net.sf.jni4net.jni
 {
-    [SecurityPermission(SecurityAction.Assert, Flags = SecurityPermissionFlag.Execution | SecurityPermissionFlag.UnmanagedCode | SecurityPermissionFlag.SkipVerification)]
-    [ReflectionPermission(SecurityAction.Assert, Unrestricted = true)]
+    
+    
     internal class MethodWrapper
     {
         //just to prevent collection
@@ -105,11 +105,8 @@ namespace net.sf.jni4net.jni
         {
             if (moduleBuilder == null)
             {
-                assemblyBuilder =
-                    AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("net.sf.jni4net.jni.dynammic"),
-                                                                  AssemblyBuilderAccess.RunAndSave); //TODO RUN only
-                moduleBuilder = assemblyBuilder.DefineDynamicModule("net.sf.jni4net.jni.dynammic",
-                                                                    "net.sf.jni4net.jni.dynammic.dll");
+                assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("net.sf.jni4net.jni.dynammic"), AssemblyBuilderAccess.Run); 
+                moduleBuilder = assemblyBuilder.DefineDynamicModule("net.sf.jni4net.jni.dynammic");
             }
             return moduleBuilder;
         }

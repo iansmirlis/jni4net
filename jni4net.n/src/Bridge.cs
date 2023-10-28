@@ -32,7 +32,7 @@ namespace net.sf.jni4net
         private static BridgeSetup setup;
         private static readonly string homeDir;
 
-        [FileIOPermission(SecurityAction.Assert, Unrestricted = true)]
+        
         static Bridge()
         {
             homeDir = AppDomain.CurrentDomain.BaseDirectory.ToLowerInvariant();
@@ -77,11 +77,7 @@ namespace net.sf.jni4net
             CreateJVM();
         }
 
-        [SecurityPermission(SecurityAction.Assert,
-            Flags =
-                SecurityPermissionFlag.Execution | SecurityPermissionFlag.UnmanagedCode |
-                SecurityPermissionFlag.SkipVerification)]
-        [ReflectionPermission(SecurityAction.Assert, Unrestricted = true)]
+        
         private static JNIEnv CreateJVM()
         {
             JavaVM jvm;
@@ -110,7 +106,7 @@ namespace net.sf.jni4net
             return env;
         }
 
-        [FileIOPermission(SecurityAction.Assert, Unrestricted = true)]
+        
         public static string FindJar()
         {
             string dir = homeDir;
@@ -175,14 +171,14 @@ namespace net.sf.jni4net
             return typeof (Bridge).Assembly.GetName().Version.ToString();
         }
 
-        [FileIOPermission(SecurityAction.Assert, Unrestricted = true)]
+        
         public static void LoadAndRegisterAssemblyByName(string strongName)
         {
             Assembly assembly = Assembly.Load(strongName);
             RegisterAssembly(assembly);
         }
 
-        [FileIOPermission(SecurityAction.Assert, Unrestricted = true)]
+        
         public static void RegisterAssembly(Assembly assembly)
         {
             if (knownAssemblies.ContainsKey(assembly))
@@ -206,7 +202,7 @@ namespace net.sf.jni4net
             }
         }
 
-        [FileIOPermission(SecurityAction.Assert, Unrestricted = true)]
+        
         public static void LoadAndRegisterAssemblyFrom(File assemblyFile)
         {
             string assemblyPath = new Uri(assemblyFile.getCanonicalFile().toURI().toString()).LocalPath;
@@ -231,7 +227,7 @@ namespace net.sf.jni4net
             RegisterAssembly(assembly);
         }
 
-        [FileIOPermission(SecurityAction.Assert, Unrestricted = true)]
+        
         public static void LoadAndRegisterAssemblyFrom(File assemblyFile, ClassLoader classLoader)
         {
             string assemblyPath = new Uri(assemblyFile.getCanonicalFile().toURI().toString()).LocalPath;
@@ -341,8 +337,8 @@ namespace net.sf.jni4net
             return 0;
         }
 
-        [EnvironmentPermission(SecurityAction.Assert, Unrestricted = true)]
-        [FileIOPermission(SecurityAction.Assert, Unrestricted = true)]
+        
+        
         private static void DumpRuntimeVersions()
         {
             if (Setup.Verbose)
@@ -364,7 +360,7 @@ namespace net.sf.jni4net
             }
         }
 
-        [FileIOPermission(SecurityAction.Assert, Unrestricted = true)]
+        
         internal static void BindCore(JNIEnv env, BridgeSetup newSetup)
         {
             if (CheckAlreadyLoaded(newSetup, env))
