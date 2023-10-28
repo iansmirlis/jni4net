@@ -14,10 +14,11 @@
     <modules>
         <module>jni4net.j</module>
         <module>jni4net.n</module>
-        <module>jni4net.n.w32.v20</module>
+        <!-- 
+        <module>jni4net.n.w32.v20</module> 
         <module>jni4net.n.w64.v20</module>
         <module>jni4net.n.w32.v40</module>
-        <module>jni4net.n.w64.v40</module>
+        <module>jni4net.n.w64.v40</module> -->
         <module>jni4net.proxygen</module>
         <module>jni4net.tested.j</module>
         <module>jni4net.tested.n</module>
@@ -96,7 +97,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>2.3</version>
+                    <version>2.4</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
@@ -129,7 +130,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>2.3</version>
+                <version>2.4</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
                 </configuration>

@@ -10,7 +10,6 @@
     <groupId>net.sf.jni4net</groupId>
     <artifactId>jni4net.test.n</artifactId>
     <version>0.8.9.0</version>
-    <packaging>dotnet:library</packaging>
     <name>jni4net .NET test</name>
     <description>jni4net .NET test</description>
     <organization>
@@ -27,48 +26,37 @@
             <groupId>net.sf.jni4net</groupId>
             <artifactId>jni4net.n</artifactId>
             <version>0.8.9.0</version>
-            <type>dotnet:library</type>
         </dependency>
+        <!--
         <dependency>
             <groupId>net.sf.jni4net</groupId>
             <artifactId>jni4net.n.w64.v20</artifactId>
             <version>0.8.9.0</version>
-            <type>dotnet:library</type>
         </dependency>
         <dependency>
             <groupId>net.sf.jni4net</groupId>
             <artifactId>jni4net.n.w64.v40</artifactId>
             <version>0.8.9.0</version>
-            <type>dotnet:library</type>
         </dependency>
         <dependency>
             <groupId>net.sf.jni4net</groupId>
             <artifactId>jni4net.n.w32.v40</artifactId>
             <version>0.8.9.0</version>
-            <type>dotnet:library</type>
         </dependency>
         <dependency>
             <groupId>net.sf.jni4net</groupId>
             <artifactId>jni4net.n.w32.v20</artifactId>
             <version>0.8.9.0</version>
-            <type>dotnet:library</type>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>net.sf.jni4net</groupId>
             <artifactId>jni4net.tested.n</artifactId>
             <version>0.8.9.0</version>
-            <type>dotnet:library</type>
         </dependency>
         <dependency>
             <groupId>net.sf.jni4net</groupId>
             <artifactId>jni4net.test.j</artifactId>
             <version>0.8.9.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.nunit</groupId>
-            <artifactId>nunit.framework</artifactId>
-            <version>2.5.8.10295</version>
-            <type>dotnet:library</type>
         </dependency>
 	</dependencies>
     <build>
@@ -76,44 +64,22 @@
         <testSourceDirectory>src</testSourceDirectory>
         <plugins>
             <plugin>
-                <groupId>org.sonatype.nmaven.plugins</groupId>
-                <artifactId>maven-dotnet-compiler-plugin</artifactId>
-                <extensions>true</extensions>
-                <version>0.17.jni4net.0</version>
-                <configuration>
-                    <frameworkVersion>3.5</frameworkVersion>
-                    <aditionalOptions>/unsafe /warn:0 /keyfile:${basedir}/../tools/keys/jni4net.snk</aditionalOptions>
-                </configuration>
-            </plugin>
-			<plugin>
-				<groupId>org.sonatype.nmaven.plugins</groupId>
-				<artifactId>maven-dotnet-test-plugin</artifactId>
-                <version>0.17.jni4net.0</version>
-				<configuration>
-					<nunitHome>${env.ProgramFiles}\NUnit-2.5.8.10295</nunitHome>
-				</configuration>
-			</plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
-                        <id>copy</id>
+                        <id>dotnet-compile</id>
                         <phase>compile</phase>
                         <goals>
-                            <goal>copy</goal>
+                            <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.nunit</groupId>
-                                    <artifactId>nunit.framework</artifactId>
-                                    <version>2.5.8.10295</version>
-                                    <type>dotnet:library</type>
-                                    <outputDirectory>target/test-assemblies</outputDirectory>
-                                    <destFileName>nunit.framework.dll</destFileName>
-                                </artifactItem>
-                            </artifactItems>
+                            <executable>dotnet</executable>
+                            <arguments>
+                                <argument>build</argument>
+                                <argument>src/jni4net.test.n.csproj</argument>
+                            </arguments>
                         </configuration>
                     </execution>
                 </executions>

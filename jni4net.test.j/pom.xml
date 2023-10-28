@@ -26,7 +26,6 @@
             <groupId>net.sf.jni4net</groupId>
             <artifactId>jni4net.n</artifactId>
             <version>0.8.9.0</version>
-            <type>dotnet:library</type>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
