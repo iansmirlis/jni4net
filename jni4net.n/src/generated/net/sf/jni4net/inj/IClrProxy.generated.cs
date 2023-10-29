@@ -52,7 +52,7 @@ namespace net.sf.jni4net.inj {
         public virtual long getClrHandle()
         {
             global::net.sf.jni4net.jni.JNIEnv env = this.Env;
-            return env.CallIntMethod(this, global::net.sf.jni4net.inj.__IClrProxy._getClrHandle0);
+            return env.CallLongMethod(this, global::net.sf.jni4net.inj.__IClrProxy._getClrHandle0);
         }
 
         public virtual void initProxy(long par0)
