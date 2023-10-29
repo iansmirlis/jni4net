@@ -21,6 +21,7 @@ package net.sf.jni4net.tested;
 import net.sf.jni4net.Bridge;
 import system.Type;
 import system.reflection.MethodInfo;
+import system.reflection.PropertyInfo;
 
 import java.io.IOException;
 
@@ -49,9 +50,9 @@ public class JavaToClrReflection {
 			}
 		}
 
-        Type retype = Type.GetType("System.Runtime.InteropServices.RuntimeEnvironment");
-        MethodInfo methodInfo = retype.GetMethod("GetSystemVersion");
-        Object invoke = methodInfo.Invoke(null, null);
+        Type retype = Type.GetType("System.Environment");
+        PropertyInfo pInfo = retype.GetProperty("Version");
+        Object invoke = pInfo.GetValue(pInfo, null);
         System.out.println("CLR Version " + invoke.toString());
 
     }
