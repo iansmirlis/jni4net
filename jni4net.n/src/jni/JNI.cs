@@ -156,10 +156,12 @@ namespace net.sf.jni4net.jni
 
             static IntPtr DllImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
             {
+                Console.WriteLine("DllImportResolver: " + libraryName);
                 //todo: search also for windows & other versions
                 var javahome = Environment.GetEnvironmentVariable(JAVA_HOME_ENV);
+                Console.Error.WriteLine("JAVA_HOME: " + javahome);
                 if (string.IsNullOrEmpty(javahome)) { return IntPtr.Zero; }
-                var path = Path.Combine(javahome, "lib", "server", "libjvm.so");
+                var path = Path.Combine(javahome, "bin", "server", "jvm.dll");
 
                 NativeLibrary.TryLoad(path, assembly, searchPath, out var handle);
                 return handle;
