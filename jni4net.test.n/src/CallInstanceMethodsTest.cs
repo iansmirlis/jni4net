@@ -33,7 +33,7 @@ namespace net.sf.jni4net.test
     {
         private JavaCallInstanceMethods testInstance;
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public override void Setup()
         {
             base.Setup();

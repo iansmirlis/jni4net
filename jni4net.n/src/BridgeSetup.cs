@@ -78,14 +78,14 @@ namespace net.sf.jni4net
             get { return jvmCLassPath.ToArray(); }
         }
 
-        [FileIOPermission(SecurityAction.Assert, Unrestricted = true)]
+        
         public void AddBridgeClassPath()
         {
             string bridgeJar = Bridge.FindJar();
             AddClassPath(bridgeJar);
         }
 
-        [FileIOPermission(SecurityAction.Assert, Unrestricted = true)]
+        
         public void AddClassPath(string jarOrClassRoot, bool expand)
         {
             if (string.IsNullOrEmpty(jarOrClassRoot))
@@ -111,7 +111,7 @@ namespace net.sf.jni4net
             jvmCLassPath.Add(expand ? jarOrClassRootEx : jarOrClassRoot);
         }
 
-        [FileIOPermission(SecurityAction.Assert, Unrestricted = true)]
+        
         public void AddClassPath(string jarOrClassRoot)
         {
             AddClassPath(jarOrClassRoot, true);
@@ -127,7 +127,7 @@ namespace net.sf.jni4net
             jvmOptions.Add(setting);
         }
 
-        [FileIOPermission(SecurityAction.Assert, Unrestricted = true)]
+        
         public void AddAllJarsClassPath(string directory)
         {
             foreach (string jar in Directory.GetFiles(directory, "*.jar"))

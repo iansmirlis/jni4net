@@ -18,8 +18,8 @@ using System.Security.Permissions;
 
 namespace net.sf.jni4net.jni
 {
-    [SecurityPermission(SecurityAction.Assert, Flags = SecurityPermissionFlag.Execution | SecurityPermissionFlag.UnmanagedCode | SecurityPermissionFlag.SkipVerification)]
-    [ReflectionPermission(SecurityAction.Assert, Unrestricted = true)]
+    
+    
     public unsafe partial class JavaVM
     {
         private readonly IntPtr native;

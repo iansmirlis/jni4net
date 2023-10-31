@@ -27,7 +27,7 @@ namespace net.sf.jni4net.test
     [TestFixture]
     public class StaticFieldTest : TestBase
     {
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public override void Setup()
         {
             base.Setup();

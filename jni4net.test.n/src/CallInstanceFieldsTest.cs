@@ -29,7 +29,7 @@ namespace net.sf.jni4net.test
     {
         private JavaInstanceFields testInstance;
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public override void Setup()
         {
             base.Setup();

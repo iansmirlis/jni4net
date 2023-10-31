@@ -15,10 +15,13 @@ using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using JType=java.lang.reflect.Type;
 using Microsoft.Win32;
+using System.Reflection;
+using java.util;
+using System.Linq;
 
 namespace net.sf.jni4net.jni
 {
-    internal static unsafe class JNI
+    internal static unsafe partial class JNI
     {
         public const int JNI_VERSION_1_1 = 0x00010001;
         public const int JNI_VERSION_1_2 = 0x00010002;
@@ -29,25 +32,18 @@ namespace net.sf.jni4net.jni
         private const string JDK_REGISTRY_KEY = @"HKEY_LOCAL_MACHINE\SOFTWARE\JavaSoft\Java Development Kit";
         private const string JAVA_HOME_ENV = "JAVA_HOME";
         private const string ARCH_ENV = "PROCESSOR_ARCHITECTURE";
+        private const string JNI_LINUX = "libjvm.so";
+        private const string JNI_WINDOWS = "jvm.dll";
 
         private static bool init;
 
-        /*static JNI()
-        {
-            Init();
-        }*/
-
-        [EnvironmentPermission(SecurityAction.Assert, Unrestricted = true)]
-        [RegistryPermission(SecurityAction.Assert, Read = JRE_REGISTRY_KEY)]
-        [RegistryPermission(SecurityAction.Assert, Read = JDK_REGISTRY_KEY)]
-        [FileIOPermission(SecurityAction.Assert, Unrestricted = true)]
-        [SecurityPermission(SecurityAction.Assert, Flags = SecurityPermissionFlag.Execution|SecurityPermissionFlag.UnmanagedCode|SecurityPermissionFlag.SkipVerification)]
         private static void Init()
         {
             if (!init)
             {
-                string findJvmDir = FindJvmDir();
-                AddEnvironmentPath(findJvmDir);
+                var findJvmDir = FindJvmDir();
+                AddResolvePath(findJvmDir);
+
                 var args = new JavaVMInitArgs();
                 try
                 {
@@ -67,6 +63,7 @@ namespace net.sf.jni4net.jni
                 }
             }
         }
+
 
         private static string FindJvmDir()
         {
@@ -91,7 +88,7 @@ namespace net.sf.jni4net.jni
                 }
             }
 
-            if (!IsRunningOnUnix())
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
             {
                 string arch = Environment.GetEnvironmentVariable(ARCH_ENV);
                 var is64Arch = (arch != null && arch.Contains("64"));
@@ -159,59 +156,32 @@ namespace net.sf.jni4net.jni
                 }
             }
 
-            if (Bridge.Setup.JavaHome == null)
-            {
-                throw new JNIException("JAVA_HOME environment variable is not set");
-            }
+            if (Bridge.Setup.JavaHome == null) throw new JNIException("JAVA_HOME environment variable is not set");
 
-            if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory))
-            {
-                return directory;
-            }
-            directory = Path.Combine(Bridge.Setup.JavaHome, @"bin\client\");
+            if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory)) return directory;
 
-            if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory))
+            var possiblePaths = new[]
             {
-                return directory;
-            }
-            directory = Path.Combine(Bridge.Setup.JavaHome, @"bin\server\");
+                @"bin\server",
+                @"bin\client",
+                @"bin\classic",
+                @"lib\server",
+                @"lib\client",
+                @"lib\classic",
+                @"jre\bin\server",
+                @"jre\bin\client",
+                @"jre\bin\classic"
+            };
 
-            if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory))
+            foreach(var path in possiblePaths)
             {
-                return directory;
-            }
-            directory = Path.Combine(Bridge.Setup.JavaHome, @"jre\bin\client\");
-
-            if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory))
-            {
-                return directory;
-            }
-            directory = Path.Combine(Bridge.Setup.JavaHome, @"jre\bin\server\");
-
-            if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory))
-            {
-                return directory;
-            }
-            directory = Path.Combine(Bridge.Setup.JavaHome, @"jre\bin\classic\");
-
-            if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory))
-            {
-                return directory;
+                directory = Path.Combine( new[] { Bridge.Setup.JavaHome }.Concat( path.Split('\\') ).ToArray() );
+                if (Directory.Exists(directory)) return directory;
             }
 
             throw new JNIException("JAVA_HOME environment variable points to an invalid location: " + Bridge.Setup.JavaHome);
         }
 
-        private static bool IsRunningOnUnix()
-        {
-            int p = (int) Environment.OSVersion.Platform;
-            return ((p == 4) || (p == 6) || (p == 128));
-        }
-
-        public static void CreateJavaVM(out JavaVM jvm, out JNIEnv env, params string[] options)
-        {
-            CreateJavaVM(out jvm, out env, false, options);
-        }
 
         public static void CreateJavaVM(out JavaVM jvm, out JNIEnv env, bool attachIfExists, params string[] options)
         {
@@ -266,31 +236,43 @@ namespace net.sf.jni4net.jni
             env = new JNIEnv(nenv);
         }
 
-        private static void AddEnvironmentPath(string jvm)
+        private static void AddResolvePath(string jvm)
         {
-            string path = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
-            if (!path.StartsWith(jvm))
+            if(Environment.OSVersion.Platform == PlatformID.Win32NT)
             {
-                path = jvm + Path.PathSeparator + path;
-                Environment.SetEnvironmentVariable("PATH", path);
+                string path = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
+                if (!path.StartsWith(jvm))
+                {
+                    path = jvm + Path.PathSeparator + path;
+                    Environment.SetEnvironmentVariable("PATH", path);
+                }
             }
-        }
+            else  // On linux .net does not respect LD_LIBRARY_PATH (bug?), so we need to use DllImportResolver
+            {
+                NativeLibrary.SetDllImportResolver(typeof(JNI).Assembly, (name, assembly, searchPath) =>
+                {
+                    if (name == "jvm")
+                    {
+                        return NativeLibrary.Load(Path.Combine(jvm, JNI_LINUX), assembly, searchPath);
+                    }
+                    return IntPtr.Zero;
+                });
+            }
 
+        }
 
         #region Nested type: Dll
 
-        private static class Dll
+        private static partial class Dll
         {
-            [DllImport("jvm.dll", CallingConvention = CallingConvention.StdCall)]
-            internal static extern JNIResult JNI_CreateJavaVM(out IntPtr pvm, out IntPtr penv,
-                                                              JavaVMInitArgs* args);
+            [LibraryImport("jvm")]
+            internal static partial JNIResult JNI_CreateJavaVM(out IntPtr pvm, out IntPtr penv, JavaVMInitArgs* args);
 
-            [DllImport("jvm.dll", CallingConvention = CallingConvention.StdCall)]
-            internal static extern JNIResult JNI_GetCreatedJavaVMs(out IntPtr pvm, int size,
-                                                                   [Out] out int size2);
+            [LibraryImport("jvm")]
+            internal static partial JNIResult JNI_GetCreatedJavaVMs(out IntPtr pvm, int size, out int size2);
 
-            [DllImport("jvm.dll", CallingConvention = CallingConvention.StdCall)]
-            internal static extern JNIResult JNI_GetDefaultJavaVMInitArgs(JavaVMInitArgs* args);
+            [LibraryImport("jvm")]
+            internal static partial JNIResult JNI_GetDefaultJavaVMInitArgs(JavaVMInitArgs* args);
         }
 
         #endregion

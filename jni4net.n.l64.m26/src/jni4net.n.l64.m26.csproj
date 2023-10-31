@@ -2,10 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
+    <AssemblyName>jni4net.n.l64.m26</AssemblyName>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <OutputPath>..\target\</OutputPath>
   </PropertyGroup>
+
+  <ItemGroup>
+  </ItemGroup>
 
 </Project>

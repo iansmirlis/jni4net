@@ -15,7 +15,7 @@ namespace net.sf.jni4net.test
     {
         private JInterfacesHelper testInstance;
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public override void Setup()
         {
             base.Setup();
@@ -62,19 +62,17 @@ namespace net.sf.jni4net.test
         }
 
         [Test]
-        [ExpectedException(typeof(JNIException))]
         public void cIfaceCant()
         {
             var cw1 = new JWithClrInterface(1);
-            Bridge.WrapCLR(cw1);
+            Assert.Throws<JNIException>(() => Bridge.WrapCLR(cw1));
         }
 
         [Test]
-        [ExpectedException(typeof(JNIException))]
         public void cIfaceCant2()
         {
             var cw1 = new String("sdfd");
-            Bridge.UnwrapCLR<IClrProxy>(cw1);
+            Assert.Throws<JNIException>(() => Bridge.UnwrapCLR<IClrProxy>(cw1));
         }
 
         [Test]
@@ -124,7 +122,7 @@ namespace net.sf.jni4net.test
             Assert.AreEqual(0, cw2.CompareTo(cw1));
 
             cw1.run();
-            Assert.AreEqual((String)"5", cw1.ToString());
+            Assert.AreEqual((String)"5", (String)cw1.ToString());
         }
 
         [Test]
@@ -141,7 +139,7 @@ namespace net.sf.jni4net.test
             Assert.AreEqual(0, comparable.CompareTo(cw2));
 
             runnable.run();
-            Assert.AreEqual((String)"5", runnable.ToString());
+            Assert.AreEqual((String)"5", (String)runnable.ToString());
         }
 
         [Test]

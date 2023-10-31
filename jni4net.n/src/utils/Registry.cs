@@ -17,7 +17,7 @@ using net.sf.jni4net.jni;
 
 namespace net.sf.jni4net.utils
 {
-    [ReflectionPermission(SecurityAction.Assert, Unrestricted = true)]
+    
     public partial class Registry
     {
         public static RegistryRecord GetRecord(JNIEnv env, JniHandle obj, Class iface)

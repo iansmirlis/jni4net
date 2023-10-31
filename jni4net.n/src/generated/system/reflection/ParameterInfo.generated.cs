@@ -43,10 +43,6 @@ namespace System.Reflection {
             methods.Add(global::net.sf.jni4net.jni.JNINativeMethod.Create(@__type, "GetCustomAttributes", "GetCustomAttributes0", "(Z)[Lsystem/Object;"));
             methods.Add(global::net.sf.jni4net.jni.JNINativeMethod.Create(@__type, "GetCustomAttributes", "GetCustomAttributes1", "(Lsystem/Type;Z)[Lsystem/Object;"));
             methods.Add(global::net.sf.jni4net.jni.JNINativeMethod.Create(@__type, "IsDefined", "IsDefined2", "(Lsystem/Type;Z)Z"));
-            methods.Add(global::net.sf.jni4net.jni.JNINativeMethod.Create(@__type, "GetTypeInfoCount", "GetTypeInfoCount3", "(Lnet/sf/jni4net/Out;)V"));
-            methods.Add(global::net.sf.jni4net.jni.JNINativeMethod.Create(@__type, "GetTypeInfo", "GetTypeInfo4", "(IIJ)V"));
-            methods.Add(global::net.sf.jni4net.jni.JNINativeMethod.Create(@__type, "GetIDsOfNames", "GetIDsOfNames5", "(Lnet/sf/jni4net/Ref;JIIJ)V"));
-            methods.Add(global::net.sf.jni4net.jni.JNINativeMethod.Create(@__type, "Invoke", "Invoke6", "(ILnet/sf/jni4net/Ref;ISJJJJ)V"));
             methods.Add(global::net.sf.jni4net.jni.JNINativeMethod.Create(@__type, "getParameterType", "ParameterType7", "()Lsystem/Type;"));
             methods.Add(global::net.sf.jni4net.jni.JNINativeMethod.Create(@__type, "getName", "Name8", "()Ljava/lang/String;"));
             methods.Add(global::net.sf.jni4net.jni.JNINativeMethod.Create(@__type, "getDefaultValue", "DefaultValue9", "()Lsystem/Object;"));
@@ -99,52 +95,6 @@ namespace System.Reflection {
             @__return = ((bool)(((global::System.Reflection.ICustomAttributeProvider)(@__real)).IsDefined(global::net.sf.jni4net.utils.Convertor.StrongJp2C<global::System.Type>(@__env, attributeType), inherit)));
             }catch (global::System.Exception __ex){@__env.ThrowExisting(__ex);}
             return @__return;
-        }
-        
-        private static void GetTypeInfoCount3(global::System.IntPtr @__envp, global::net.sf.jni4net.utils.JniLocalHandle @__obj, global::net.sf.jni4net.utils.JniLocalHandle pcTInfo) {
-            // (Lnet/sf/jni4net/Out;)V
-            // (LSystem/UInt32;)V
-            global::net.sf.jni4net.jni.JNIEnv @__env = global::net.sf.jni4net.jni.JNIEnv.Wrap(@__envp);
-            try {
-            uint @__out_pcTInfo;
-            global::System.Reflection.ParameterInfo @__real = global::net.sf.jni4net.utils.Convertor.StrongJp2C<global::System.Reflection.ParameterInfo>(@__env, @__obj);
-            ((global::System.Runtime.InteropServices._ParameterInfo)(@__real)).GetTypeInfoCount(out __out_pcTInfo);
-            net.sf.jni4net.Out.SetValue<uint>(@__env, pcTInfo, @__out_pcTInfo);
-            }catch (global::System.Exception __ex){@__env.ThrowExisting(__ex);}
-        }
-        
-        private static void GetTypeInfo4(global::System.IntPtr @__envp, global::net.sf.jni4net.utils.JniLocalHandle @__obj, uint iTInfo, uint lcid, global::System.IntPtr ppTInfo) {
-            // (IIJ)V
-            // (LSystem/UInt32;LSystem/UInt32;LSystem/IntPtr;)V
-            global::net.sf.jni4net.jni.JNIEnv @__env = global::net.sf.jni4net.jni.JNIEnv.Wrap(@__envp);
-            try {
-            global::System.Reflection.ParameterInfo @__real = global::net.sf.jni4net.utils.Convertor.StrongJp2C<global::System.Reflection.ParameterInfo>(@__env, @__obj);
-            ((global::System.Runtime.InteropServices._ParameterInfo)(@__real)).GetTypeInfo(iTInfo, lcid, ppTInfo);
-            }catch (global::System.Exception __ex){@__env.ThrowExisting(__ex);}
-        }
-        
-        private static void GetIDsOfNames5(global::System.IntPtr @__envp, global::net.sf.jni4net.utils.JniLocalHandle @__obj, global::net.sf.jni4net.utils.JniLocalHandle riid, global::System.IntPtr rgszNames, uint cNames, uint lcid, global::System.IntPtr rgDispId) {
-            // (Lnet/sf/jni4net/Ref;JIIJ)V
-            // (LSystem/Guid;LSystem/IntPtr;LSystem/UInt32;LSystem/UInt32;LSystem/IntPtr;)V
-            global::net.sf.jni4net.jni.JNIEnv @__env = global::net.sf.jni4net.jni.JNIEnv.Wrap(@__envp);
-            try {
-            global::System.Guid @__ref_riid = net.sf.jni4net.Ref.GetValue<global::System.Guid>(@__env, riid);
-            global::System.Reflection.ParameterInfo @__real = global::net.sf.jni4net.utils.Convertor.StrongJp2C<global::System.Reflection.ParameterInfo>(@__env, @__obj);
-            ((global::System.Runtime.InteropServices._ParameterInfo)(@__real)).GetIDsOfNames(ref __ref_riid, rgszNames, cNames, lcid, rgDispId);
-            net.sf.jni4net.Ref.SetValue<global::System.Guid>(@__env, riid, @__ref_riid);
-            }catch (global::System.Exception __ex){@__env.ThrowExisting(__ex);}
-        }
-        
-        private static void Invoke6(global::System.IntPtr @__envp, global::net.sf.jni4net.utils.JniLocalHandle @__obj, uint dispIdMember, global::net.sf.jni4net.utils.JniLocalHandle riid, uint lcid, short wFlags, global::System.IntPtr pDispParams, global::System.IntPtr pVarResult, global::System.IntPtr pExcepInfo, global::System.IntPtr puArgErr) {
-            // (ILnet/sf/jni4net/Ref;ISJJJJ)V
-            // (LSystem/UInt32;LSystem/Guid;LSystem/UInt32;SLSystem/IntPtr;LSystem/IntPtr;LSystem/IntPtr;LSystem/IntPtr;)V
-            global::net.sf.jni4net.jni.JNIEnv @__env = global::net.sf.jni4net.jni.JNIEnv.Wrap(@__envp);
-            try {
-            global::System.Guid @__ref_riid = net.sf.jni4net.Ref.GetValue<global::System.Guid>(@__env, riid);
-            global::System.Reflection.ParameterInfo @__real = global::net.sf.jni4net.utils.Convertor.StrongJp2C<global::System.Reflection.ParameterInfo>(@__env, @__obj);
-            ((global::System.Runtime.InteropServices._ParameterInfo)(@__real)).Invoke(dispIdMember, ref __ref_riid, lcid, wFlags, pDispParams, pVarResult, pExcepInfo, puArgErr);
-            net.sf.jni4net.Ref.SetValue<global::System.Guid>(@__env, riid, @__ref_riid);
-            }catch (global::System.Exception __ex){@__env.ThrowExisting(__ex);}
         }
         
         private static global::net.sf.jni4net.utils.JniHandle ParameterType7(global::System.IntPtr @__envp, global::net.sf.jni4net.utils.JniLocalHandle @__obj) {

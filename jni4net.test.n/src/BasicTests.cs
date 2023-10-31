@@ -191,10 +191,9 @@ namespace net.sf.jni4net.test
         }
 
         [Test]
-        [ExpectedException(typeof (NoClassDefFoundError))]
         public void BadClassThrow()
         {
-            env.FindClass("asdfadf");
+            Assert.Throws<NoClassDefFoundError>(() => env.FindClass("asdfadf") );
         }
 
 
@@ -258,7 +257,7 @@ namespace net.sf.jni4net.test
             using (var bw = new BinaryWriter(new MemoryStream(myLovelyData, 0, 2048, true, true), Encoding.Unicode))
             {
                 bw.Seek(0x1CC, SeekOrigin.Begin);
-                bw.Write('Ž');
+                bw.Write('ï¿½');
 
                 bw.Seek(0x1aa, SeekOrigin.Begin);
                 bw.Write(0.112233d);
@@ -289,7 +288,7 @@ namespace net.sf.jni4net.test
             Assert.AreEqual(0xfe, buffer.get());
             Assert.AreEqual(0xff, buffer.get());
             buffer.position(0x1CC);
-            Assert.AreEqual('Ž', buffer.getChar());
+            Assert.AreEqual('ï¿½', buffer.getChar());
             buffer.position(0x1aa);
             Assert.AreEqual(0.112233d, buffer.getDouble());
         }
@@ -331,16 +330,17 @@ namespace net.sf.jni4net.test
         }
 
         [Test]
-        [ExpectedException(typeof(BufferOverflowException))]
         public void BBwrapThrow()
         {
-            byte[] myLovelyData = PrepareData();
+            Assert.Throws<BufferOverflowException>(() => {
+                byte[] myLovelyData = PrepareData();
 
-            DirectByteBuffer buffer = new DirectByteBuffer(myLovelyData);
+                DirectByteBuffer buffer = new DirectByteBuffer(myLovelyData);
 
-            buffer.position(myLovelyData.Length - 1);
-            buffer.put(0xEE);
-            buffer.put(0xEE);
+                buffer.position(myLovelyData.Length - 1);
+                buffer.put(0xEE);
+                buffer.put(0xEE);
+            });
         }
 
         
@@ -357,7 +357,7 @@ namespace net.sf.jni4net.test
             Assert.AreEqual(0xfe, buffer.get());
             Assert.AreEqual(0xff, buffer.get());
             buffer.position(0x1CC);
-            Assert.AreEqual('Ž', buffer.getChar());
+            Assert.AreEqual('ï¿½', buffer.getChar());
             buffer.position(0x1aa);
             Assert.AreEqual(0.112233d, buffer.getDouble());
         }
@@ -435,15 +435,11 @@ namespace net.sf.jni4net.test
             GC.WaitForPendingFinalizers();
         }
 
-        public static void Main()
+        /*public static void Main()
         {
-            //var test =  new BridgeTest();
-            //test.Setup();
-            //test.HeavyAlloc();
-
             var test = new CallBackTest();
             test.Setup();
             test.HeavyCallMeFromJava();
-        }
+        }*/
     }
 }

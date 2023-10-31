@@ -25,6 +25,7 @@ using System.Threading;
 using net.sf.jni4net.jni;
 using net.sf.jni4net.tested;
 using NUnit.Framework;
+using System.Runtime.CompilerServices;
 
 namespace net.sf.jni4net.test
 {
@@ -32,35 +33,28 @@ namespace net.sf.jni4net.test
     {
         protected JNIEnv env;
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public virtual void Setup()
         {
-            var sp = new FileIOPermission(PermissionState.Unrestricted);
-            sp.Assert();
-            string prefix;
-            if (Environment.CurrentDirectory.EndsWith("target"))
-            {
-                prefix = "../../";
-            }
-            else
-            {
-                prefix = "../../../";
-            }
-            sp.Deny();
+            string prefix = GetCurrentSourcePath(); 
+            prefix = prefix.Substring(0, prefix.IndexOf("jni4net.test.n"));
+
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
-            BridgeSetup setup=new BridgeSetup (false){Verbose = true, Debug = true};
+            BridgeSetup setup=new BridgeSetup(false) { Verbose = true, Debug = false };
             setup.IgnoreJavaHome = true;
             setup.AddJVMOption("-Xmx512m");
             setup.AddClassPath(prefix + "jni4net.j/target/classes");
             setup.AddClassPath(prefix + "jni4net.tested.j/target/classes");
             setup.AddClassPath(prefix + "jni4net.test.j/target/test-classes");
-            //setup.JavaHome = @"c:\Program Files (x86)\Java\ibm_sdk60";
+            
             env = Bridge.CreateJVM(setup);
             Bridge.RegisterAssembly(typeof(TestBase).Assembly);
             Bridge.RegisterAssembly(typeof(JavaInstanceFields).Assembly);
         }
 
-        [TestFixtureTearDown]
+        private static string GetCurrentSourcePath([CallerFilePath] string callerFilePath = null )  => callerFilePath ?? "";
+
+        [OneTimeTearDown]
         public void TearDown()
         {
             //Assert.AreEqual(JNIResult.JNI_OK, vm.DestroyJavaVM());

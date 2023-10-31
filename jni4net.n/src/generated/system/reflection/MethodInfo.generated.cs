@@ -56,7 +56,7 @@ namespace System.Reflection {
             global::net.sf.jni4net.utils.JniHandle @__return = default(global::net.sf.jni4net.utils.JniHandle);
             try {
             global::System.Reflection.MethodInfo @__real = global::net.sf.jni4net.utils.Convertor.StrongJp2C<global::System.Reflection.MethodInfo>(@__env, @__obj);
-            @__return = global::net.sf.jni4net.utils.Convertor.StrongC2Jp<global::System.Type>(@__env, ((global::System.Runtime.InteropServices._MethodInfo)(@__real)).ReturnType);
+            @__return = global::net.sf.jni4net.utils.Convertor.StrongC2Jp<global::System.Type>(@__env, ((global::System.Reflection.MethodInfo)(@__real)).ReturnType);
             }catch (global::System.Exception __ex){@__env.ThrowExisting(__ex);}
             return @__return;
         }
@@ -68,7 +68,7 @@ namespace System.Reflection {
             global::net.sf.jni4net.utils.JniHandle @__return = default(global::net.sf.jni4net.utils.JniHandle);
             try {
             global::System.Reflection.MethodInfo @__real = global::net.sf.jni4net.utils.Convertor.StrongJp2C<global::System.Reflection.MethodInfo>(@__env, @__obj);
-            @__return = global::net.sf.jni4net.utils.Convertor.FullC2J<global::System.Reflection.ICustomAttributeProvider>(@__env, ((global::System.Runtime.InteropServices._MethodInfo)(@__real)).ReturnTypeCustomAttributes);
+            @__return = global::net.sf.jni4net.utils.Convertor.FullC2J<global::System.Reflection.ICustomAttributeProvider>(@__env, ((global::System.Reflection.MethodInfo)(@__real)).ReturnTypeCustomAttributes);
             }catch (global::System.Exception __ex){@__env.ThrowExisting(__ex);}
             return @__return;
         }
@@ -80,7 +80,7 @@ namespace System.Reflection {
             global::net.sf.jni4net.utils.JniHandle @__return = default(global::net.sf.jni4net.utils.JniHandle);
             try {
             global::System.Reflection.MethodInfo @__real = global::net.sf.jni4net.utils.Convertor.StrongJp2C<global::System.Reflection.MethodInfo>(@__env, @__obj);
-            @__return = global::net.sf.jni4net.utils.Convertor.StrongC2Jp<global::System.Reflection.MethodInfo>(@__env, ((global::System.Runtime.InteropServices._MethodInfo)(@__real)).GetBaseDefinition());
+            @__return = global::net.sf.jni4net.utils.Convertor.StrongC2Jp<global::System.Reflection.MethodInfo>(@__env, ((global::System.Reflection.MethodInfo)(@__real)).GetBaseDefinition());
             }catch (global::System.Exception __ex){@__env.ThrowExisting(__ex);}
             return @__return;
         }

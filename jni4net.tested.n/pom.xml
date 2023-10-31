@@ -10,7 +10,6 @@
     <groupId>net.sf.jni4net</groupId>
     <artifactId>jni4net.tested.n</artifactId>
     <version>0.8.9.0</version>
-    <packaging>dotnet:library</packaging>
     <name>jni4net .NET tested</name>
     <description>jni4net .NET tested</description>
     <organization>
@@ -27,8 +26,8 @@
             <groupId>net.sf.jni4net</groupId>
             <artifactId>jni4net.n</artifactId>
             <version>0.8.9.0</version>
-            <type>dotnet:library</type>
         </dependency>
+        <!--
         <dependency>
             <groupId>net.sf.jni4net</groupId>
             <artifactId>jni4net.n.w64.v20</artifactId>
@@ -52,60 +51,35 @@
             <artifactId>jni4net.n.w32.v40</artifactId>
             <version>0.8.9.0</version>
             <type>dotnet:library</type>
-        </dependency>
-        <dependency>
+        </dependency> -->
+        
+        <!-- <dependency>
             <groupId>net.sf.jni4net</groupId>
             <artifactId>jni4net.tested.j</artifactId>
             <version>0.8.9.0</version>
-        </dependency>
+        </dependency> -->
 	</dependencies>
     <build>
         <sourceDirectory>src</sourceDirectory>
         <plugins>
             <plugin>
-                <groupId>org.sonatype.nmaven.plugins</groupId>
-                <artifactId>maven-dotnet-compiler-plugin</artifactId>
-                <extensions>true</extensions>
-                <version>0.17.jni4net.0</version>
-                <configuration>
-                    <frameworkVersion>3.5</frameworkVersion>
-                    <aditionalOptions>/unsafe /warn:0 /keyfile:${basedir}/../tools/keys/jni4net.snk</aditionalOptions>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.jvnet.maven-antrun-extended-plugin</groupId>
-                <artifactId>maven-antrun-extended-plugin</artifactId>
-                <version>1.39</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
-                        <phase>process-classes</phase>
-                        <configuration>
-                            <tasks>
-                                <resolveArtifact property="jni4net.n" groupId="net.sf.jni4net"
-                                                 artifactId="jni4net.n" version="${jni4net.version}"
-                                                 type="dotnet:library"/>
-                                <resolveArtifact property="jni4net.n.w64.v20" groupId="net.sf.jni4net"
-                                                 artifactId="jni4net.n.w64.v20" version="${jni4net.version}"
-                                                 type="dotnet:library"/>
-                                <resolveArtifact property="jni4net.n.w32.v20" groupId="net.sf.jni4net"
-                                                 artifactId="jni4net.n.w32.v20" version="${jni4net.version}"
-                                                 type="dotnet:library"/>
-                                <resolveArtifact property="jni4net.n.w64.v40" groupId="net.sf.jni4net"
-                                                 artifactId="jni4net.n.w64.v40" version="${jni4net.version}"
-                                                 type="dotnet:library"/>
-                                <resolveArtifact property="jni4net.n.w32.v40" groupId="net.sf.jni4net"
-                                                 artifactId="jni4net.n.w32.v40" version="${jni4net.version}"
-                                                 type="dotnet:library"/>
-                                <copy file="${jni4net.n}" todir="target"/>
-                                <copy file="${jni4net.n.w64.v20}" todir="target"/>
-                                <copy file="${jni4net.n.w32.v20}" todir="target"/>
-                                <copy file="${jni4net.n.w64.v40}" todir="target"/>
-                                <copy file="${jni4net.n.w32.v40}" todir="target"/>
-                            </tasks>
-                        </configuration>
+                        <id>dotnet-compile</id>
+                        <phase>compile</phase>
                         <goals>
-                            <goal>run</goal>
+                            <goal>exec</goal>
                         </goals>
+                        <configuration>
+                            <executable>dotnet</executable>
+                            <arguments>
+                                <argument>build</argument>
+                                <argument>src/jni4net.tested.n.csproj</argument>
+                            </arguments>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

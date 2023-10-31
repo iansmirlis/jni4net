@@ -10,7 +10,6 @@
     <groupId>net.sf.jni4net</groupId>
     <artifactId>jni4net.proxygen</artifactId>
     <version>0.8.9.0</version>
-    <packaging>dotnet:exe</packaging>
     <name>jni4net proxy generator</name>
     <description>jni4net proxy generator</description>
     <organization>
@@ -27,7 +26,6 @@
             <groupId>net.sf.jni4net</groupId>
             <artifactId>jni4net.n</artifactId>
             <version>0.8.9.0</version>
-            <type>dotnet:library</type>
         </dependency>
 	</dependencies>
     <build>
@@ -35,51 +33,27 @@
         <sourceDirectory>src</sourceDirectory>
         <plugins>
             <plugin>
-                <groupId>org.sonatype.nmaven.plugins</groupId>
-                <artifactId>maven-dotnet-compiler-plugin</artifactId>
-                <extensions>true</extensions>
-                <version>0.17.jni4net.0</version>
-                <configuration>
-                    <frameworkVersion>3.5</frameworkVersion>
-                    <aditionalOptions>/unsafe /win32icon:"${basedir}/src/favicon.ico" /warn:0 /keyfile:"${basedir}/../tools/keys/jni4net.snk"</aditionalOptions>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.jvnet.maven-antrun-extended-plugin</groupId>
-                <artifactId>maven-antrun-extended-plugin</artifactId>
-                <version>1.39</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
-                    		<id>key</id>
-                        <phase>initialize</phase>
-                        <configuration>
-                            <tasks>
-                                <exec executable="cmd.exe" failonerror="true">
-                                    <arg value="/c &quot;${basedir}\..\tools\keys\gennetkey.cmd&quot;"/>
-                                </exec>
-                            </tasks>
-                        </configuration>
+                        <id>dotnet-compile</id>
+                        <phase>compile</phase>
                         <goals>
-                            <goal>run</goal>
+                            <goal>exec</goal>
                         </goals>
-                    </execution>
-                    <execution>
-                    		<id>selvin</id>
-                        <phase>process-classes</phase>
                         <configuration>
-                            <tasks>
-                                <resolveArtifact property="jni4net.n" groupId="net.sf.jni4net"
-                                                 artifactId="jni4net.n" version="0.8.9.0"
-                                                 type="dotnet:library"/>
-                                <copy file="${jni4net.n}" todir="target"/>
-                            </tasks>
+                            <executable>dotnet</executable>
+                            <arguments>
+                                <argument>build</argument>
+                                <argument>src/jni4net.proxygen.csproj</argument>
+                            </arguments>
                         </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                <artifactId>maven-deploy-plugin</artifactId>
                <version>2.4</version>

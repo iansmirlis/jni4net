@@ -24,7 +24,7 @@ namespace net.sf.jni4net
         {
             try
             {
-                string jni4net = typeof (BridgeExport).Assembly.Location.Replace(".w64.v40", "");
+                string jni4net = typeof (BridgeExport).Assembly.Location.Replace(".l64.m26", "");
                 Assembly assembly = Assembly.LoadFile(jni4net);
                 Type type = assembly.GetType("net.sf.jni4net.Bridge");
                 MethodInfo method = type.GetMethod("initDotNetImpl", BindingFlags.NonPublic | BindingFlags.Static);

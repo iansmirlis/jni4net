@@ -88,10 +88,10 @@ namespace net.sf.jni4net.proxygen
             return null;
         }
 
-        [SecurityPermission(SecurityAction.Assert, Flags = SecurityPermissionFlag.UnmanagedCode | SecurityPermissionFlag.Assertion | SecurityPermissionFlag.Execution)]
-        [ReflectionPermission(SecurityAction.Assert, Unrestricted = true)]
-        [FileIOPermission(SecurityAction.Assert, Unrestricted = true)]
-        [EnvironmentPermission(SecurityAction.Assert, Unrestricted = true)]
+        
+        
+        
+        
         private static int Work(string[] args)
         {
             ToolConfig cfg;

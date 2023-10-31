@@ -28,7 +28,7 @@ namespace net.sf.jni4net.test
     public class ExceptionsTest : TestBase
     {
         private JavaExceptions testInstance;
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public override void Setup()
         {
             base.Setup();
@@ -36,10 +36,9 @@ namespace net.sf.jni4net.test
         }
 
         [Test]
-        [ExpectedException(typeof(RuntimeException), ExpectedMessage = "java")]
         public void testThrow()
         {
-            testInstance.throwBack();
+            Assert.Throws<RuntimeException>(() => testInstance.throwBack(), "java");
         }
 
         [Test]

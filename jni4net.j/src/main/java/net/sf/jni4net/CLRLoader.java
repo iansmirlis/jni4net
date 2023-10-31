@@ -27,7 +27,7 @@ class CLRLoader {
     public static void 	init(File fileOrDirectory) throws IOException {
 		if (!Bridge.isRegistered) {
 			if (fileOrDirectory.isDirectory()) {
-                final String myDllName = "jni4net.n." + getPlatform() +"." + getClr()+ "-" + getVersion() + ".dll";
+                final String myDllName = "jni4net.n." + getPlatform() +"." + getClr() + ".dll";
                 init(new File(fileOrDirectory , myDllName).getAbsoluteFile());
 				return;
 			}
@@ -59,7 +59,7 @@ class CLRLoader {
         java.io.File path;
 		if (file.endsWith("classes")) {
 			final String base = file.substring(0, file.length() - 7).replaceAll("jni4net\\.j", "jni4net.n."+getPlatform()+"."+getClr()) + "/jni4net.n";
-			path = new java.io.File(base + "."+ getPlatform()+"." + getClr()+ "-" + getVersion() + ".dll");
+			path = new java.io.File(base + "."+ getPlatform()+"." + getClr() + ".dll");
 			if (!path.exists()) {
 				throw new Error("Can't find " + path);
 			}
