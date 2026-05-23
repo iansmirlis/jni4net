@@ -81,7 +81,9 @@ namespace net.sf.jni4net.tested
 
         TestDelegate fcePtrProp { get; set; }
 
+#pragma warning disable CS0067 // Exposed for generated add/remove event bridge coverage.
         public event TestDelegate EnvDispatcher;
+#pragma warning restore CS0067
 
         public event TestDelegate EnvDispatcherProp
         {
