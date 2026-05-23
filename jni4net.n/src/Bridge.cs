@@ -41,6 +41,15 @@ namespace net.sf.jni4net
             homeDir = AppDomain.CurrentDomain.BaseDirectory.ToLowerInvariant();
         }
 
+        private static string GetBridgeAssemblyPath()
+        {
+#if NET10_0_OR_GREATER
+            return typeof(Bridge).Assembly.Location;
+#else
+            return Uri.UnescapeDataString(new Uri(typeof(Bridge).Assembly.GetName().CodeBase).AbsolutePath);
+#endif
+        }
+
         public static BridgeSetup Setup
         {
             get { return setup; }
@@ -135,7 +144,7 @@ namespace net.sf.jni4net
                 return jar4;
             }
 
-            dir = Path.GetDirectoryName(Uri.UnescapeDataString(new Uri(typeof(Bridge).Assembly.GetName().CodeBase).AbsolutePath));
+            dir = Path.GetDirectoryName(GetBridgeAssemblyPath());
             var jar5 = Path.GetFullPath(Path.Combine(dir, jarName));
             if (System.IO.File.Exists(jar5))
             {
@@ -381,7 +390,7 @@ namespace net.sf.jni4net
 
             if (newSetup.Verbose)
             {
-                var homeDll = new Uri(typeof(Bridge).Assembly.GetName().CodeBase).AbsolutePath;
+                var homeDll = GetBridgeAssemblyPath();
                 Console.WriteLine("loading core from " + homeDll);
             }
             setup = newSetup;
@@ -409,7 +418,7 @@ namespace net.sf.jni4net
             }
             if (Setup.Verbose)
             {
-                var homeDll = new Uri(typeof(Bridge).Assembly.GetName().CodeBase).AbsolutePath;
+                var homeDll = GetBridgeAssemblyPath();
                 Console.WriteLine("core loaded from " + homeDll);
             }
 
