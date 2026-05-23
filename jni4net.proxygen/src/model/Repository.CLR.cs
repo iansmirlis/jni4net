@@ -69,10 +69,6 @@ namespace net.sf.jni4net.proxygen.model
                 return known;
             }
             var res = new GType();
-            if(typeof(Delegate).IsAssignableFrom(type))
-            {
-                int i = 0;
-            }
             if (type.IsPointer)
             {
                 //it's out really
