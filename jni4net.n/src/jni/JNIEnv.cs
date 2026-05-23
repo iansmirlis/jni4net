@@ -26,7 +26,7 @@ using String=java.lang.String;
 
 namespace net.sf.jni4net.jni
 {
-    
+
     public unsafe partial class JNIEnv
     {
         #region JNI methods
@@ -1303,7 +1303,9 @@ namespace net.sf.jni4net.jni
         }
 
         [SuppressUnmanagedCodeSecurity]
+#if !NET10_0_OR_GREATER
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
+#endif
         public void DeleteGlobalRef(JniGlobalHandle gref)
         {
             if (JniGlobalHandle.IsNull(gref))
@@ -1315,7 +1317,9 @@ namespace net.sf.jni4net.jni
         }
 
         [SuppressUnmanagedCodeSecurity]
+#if !NET10_0_OR_GREATER
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
+#endif
         public void DeleteLocalRef(JniLocalHandle lref)
         {
             if (JniLocalHandle.IsNull(lref))

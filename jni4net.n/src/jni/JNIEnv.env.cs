@@ -86,7 +86,9 @@ namespace net.sf.jni4net.jni
         }
 
         [global::System.Security.SuppressUnmanagedCodeSecurity]
+#if !NET10_0_OR_GREATER
         [global::System.Runtime.ConstrainedExecution.ReliabilityContract(global::System.Runtime.ConstrainedExecution.Consistency.WillNotCorruptState, global::System.Runtime.ConstrainedExecution.Cer.Success)]
+#endif
         public static JNIEnv GetEnvNoThrow(JavaVM vm)
         {
             if (threadJNIEnv == null)

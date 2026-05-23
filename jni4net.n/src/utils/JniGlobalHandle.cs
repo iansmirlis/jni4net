@@ -43,11 +43,15 @@ namespace net.sf.jni4net.utils
 
         public static JniGlobalHandle Zero
         {
+#if !NET10_0_OR_GREATER
             [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
+#endif
             get { return zero; }
         }
 
+#if !NET10_0_OR_GREATER
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
+#endif
         public JniGlobalHandle(IntPtr handleValue, JavaVM javaVM)
             : base(IntPtr.Zero, true)
         {
@@ -55,7 +59,9 @@ namespace net.sf.jni4net.utils
             SetHandle(handleValue);
         }
 
+#if !NET10_0_OR_GREATER
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
+#endif
         public JniGlobalHandle(JniGlobalHandleNs handleValue, JavaVM javaVM)
             : base(IntPtr.Zero, true)
         {
@@ -63,7 +69,9 @@ namespace net.sf.jni4net.utils
             SetHandle(handleValue.handle);
         }
 
+#if !NET10_0_OR_GREATER
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
+#endif
         private JniGlobalHandle()
             : base(IntPtr.Zero, true)
         {
@@ -71,11 +79,15 @@ namespace net.sf.jni4net.utils
 
         public override bool IsInvalid
         {
+#if !NET10_0_OR_GREATER
             [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
+#endif
             get { return handle == IntPtr.Zero; }
         }
 
+#if !NET10_0_OR_GREATER
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
+#endif
         protected override bool ReleaseHandle()
         {
             try

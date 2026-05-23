@@ -18,8 +18,8 @@ using System.Security.Permissions;
 
 namespace net.sf.jni4net.jni
 {
-    
-    
+
+
     public unsafe partial class JavaVM
     {
         private readonly IntPtr native;
@@ -53,7 +53,9 @@ namespace net.sf.jni4net.jni
         }
 
         [SuppressUnmanagedCodeSecurity]
+#if !NET10_0_OR_GREATER
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
+#endif
         public JNIResult AttachCurrentThreadAsDaemon(out JNIEnv penv, JavaVMInitArgs? args)
         {
             if (attachCurrentThreadAsDaemon == null)
