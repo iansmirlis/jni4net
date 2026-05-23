@@ -56,4 +56,23 @@ public class JavaToClrReflection {
         System.out.println("CLR Version " + invoke.toString());
 
     }
+
+	public static void allocateTransientProxies() {
+		system.DateTime today = system.DateTime.getToday();
+		final Type type = system.DateTime.typeof();
+		final MethodInfo[] methodInfos = type.GetMethods();
+		for (MethodInfo mi : methodInfos) {
+			final String mName = mi.getName();
+			if (mName.contains("ToString") && mi.GetParameters().length == 0) {
+				mi.Invoke(today, new system.Object[]{});
+			}
+		}
+	}
+
+	public static void allocateClosedProxy() {
+		try (system.DateTime today = system.DateTime.getToday()) {
+			today.getDay();
+			today.close();
+		}
+	}
 }

@@ -25,6 +25,7 @@ using System.Security.Permissions;
 using System.Threading;
 using net.sf.jni4net.jni;
 using net.sf.jni4net.tested;
+using net.sf.jni4net.utils;
 using NUnit.Framework;
 using System.Runtime.CompilerServices;
 
@@ -44,6 +45,7 @@ namespace net.sf.jni4net.test
             }
 
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
+            IntHandle.EnableDiagnostics();
             BridgeSetup setup=new BridgeSetup(false) { Verbose = true, Debug = false };
             setup.IgnoreJavaHome = true;
             setup.AddJVMOption("-Xmx512m");

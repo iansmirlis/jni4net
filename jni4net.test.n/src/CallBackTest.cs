@@ -23,6 +23,7 @@ using java.lang;
 using net.sf.jni4net.jni;
 using net.sf.jni4net.nio;
 using net.sf.jni4net.tested;
+using net.sf.jni4net.utils;
 using NUnit.Framework;
 using Exception = java.lang.Exception;
 using Object = java.lang.Object;
@@ -82,20 +83,81 @@ namespace net.sf.jni4net.test
         }
 
         [Test]
+        public void ClosedProxyReleasesManagedHandleImmediately()
+        {
+            const int iterations = 1000;
+            Class testClass = env.FindClass("net/sf/jni4net/tested/JavaToClrReflection");
+            MethodId methodId = env.GetStaticMethodID(testClass, "allocateClosedProxy", "()V");
+            long initialAllocated = IntHandle.AllocatedCount;
+            long initialFreed = IntHandle.FreedCount;
+
+            for (int i = 0; i < iterations; i++)
+                env.CallStaticVoidMethod(testClass, methodId);
+
+            Assert.That(IntHandle.AllocatedCount - initialAllocated, Is.EqualTo(iterations));
+            Assert.That(IntHandle.FreedCount - initialFreed,
+                        Is.EqualTo(IntHandle.AllocatedCount - initialAllocated));
+        }
+
+        [Test]
         [Explicit]
         public void HeavyCallMeFromJava()
         {
-            var start = DateTime.Now;
+            int batches = GetIterationCount("JNI4NET_HEAVY_BATCHES", 100);
+            int callsPerBatch = GetIterationCount("JNI4NET_HEAVY_CALLS_PER_BATCH", 1000);
             Class testClass = env.FindClass("net/sf/jni4net/tested/JavaToClrReflection");
-            Object test = testClass.newInstance();
-            MethodId methodId = env.GetStaticMethodID(test.getClass(), "reflect", "()V");
-            for (int i = 0; i < 100000; i++)
-            {
-                env.CallVoidMethod(test,methodId);
-            }
-            var end = DateTime.Now;
+            MethodId methodId = env.GetStaticMethodID(testClass, "allocateTransientProxies", "()V");
+            long initialAllocated = IntHandle.AllocatedCount;
+            long initialFreed = IntHandle.FreedCount;
+            long initialOutstanding = IntHandle.OutstandingCount;
 
-            Console.WriteLine(end - start);
+            WriteHandleCounts("baseline", initialAllocated, initialFreed, initialOutstanding);
+            for (int batch = 1; batch <= batches; batch++)
+            {
+                for (int call = 0; call < callsPerBatch; call++)
+                    env.CallStaticVoidMethod(testClass, methodId);
+
+                WriteHandleCounts("after " + (batch * callsPerBatch) + " calls",
+                                  initialAllocated, initialFreed, initialOutstanding);
+            }
+
+            long allocationsFromCalls = IntHandle.AllocatedCount - initialAllocated;
+            long outstandingBeforeCollection = IntHandle.OutstandingCount;
+
+            java.lang.System.gc();
+            java.lang.System.runFinalization();
+            java.lang.System.gc();
+            java.lang.System.runFinalization();
+
+            WriteHandleCounts("after Java GC/finalization",
+                              initialAllocated, initialFreed, initialOutstanding);
+            TestContext.Progress.WriteLine("Outstanding handles released after collection request: {0}",
+                                           outstandingBeforeCollection - IntHandle.OutstandingCount);
+
+            Assert.That(allocationsFromCalls, Is.GreaterThan(0),
+                        "The stress callback should create managed proxy handles.");
+        }
+
+        private static void WriteHandleCounts(string phase, long initialAllocated,
+                                              long initialFreed, long initialOutstanding)
+        {
+            long allocated = IntHandle.AllocatedCount;
+            long freed = IntHandle.FreedCount;
+            long outstanding = allocated - freed;
+            TestContext.Progress.WriteLine(
+                "{0}: allocated +{1}, freed +{2}, outstanding={3} (delta {4})",
+                phase, allocated - initialAllocated, freed - initialFreed,
+                outstanding, outstanding - initialOutstanding);
+        }
+
+        private static int GetIterationCount(string environmentVariable, int defaultValue)
+        {
+            string configuredValue = Environment.GetEnvironmentVariable(environmentVariable);
+            int configuredCount;
+            if (int.TryParse(configuredValue, out configuredCount) && configuredCount > 0)
+                return configuredCount;
+
+            return defaultValue;
         }
     
     }
