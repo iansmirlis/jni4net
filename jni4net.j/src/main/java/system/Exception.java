@@ -11,7 +11,7 @@ import net.sf.jni4net.inj.IClrProxy;
 import net.sf.jni4net.Bridge;
 
     @net.sf.jni4net.attributes.ClrType
-public class Exception extends java.lang.RuntimeException implements IClrProxy, system.IObject {
+public class Exception extends java.lang.RuntimeException implements IClrProxy, system.IObject, AutoCloseable {
 
 	private long clrHandle;
 
@@ -44,12 +44,21 @@ public class Exception extends java.lang.RuntimeException implements IClrProxy, 
 
 
 	@Override
+	public synchronized void close() {
+		if (clrHandle != 0) {
+			if (net.sf.jni4net.Bridge.isRegistered()) {
+				net.sf.jni4net.Bridge.DisposeClrHandle(clrHandle);
+			}
+			clrHandle = 0;
+		}
+	}
+
+	@Override
+	@Deprecated
 	protected void finalize() throws Throwable {
 		try {
-			if (clrHandle != 0) {
-				net.sf.jni4net.Bridge.DisposeClrHandle(clrHandle);
-				clrHandle = 0;
-			}
+			close();
+		} catch (Throwable ignore) {
 		} finally {
 			super.finalize();
 		}

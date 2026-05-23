@@ -12,7 +12,7 @@ import system.IObject;
 /**
  * @author Pavel Savara (original)
  */
-public interface IClrProxy extends IObject {
+public interface IClrProxy extends IObject, AutoCloseable {
 
 	long getClrHandle();
 

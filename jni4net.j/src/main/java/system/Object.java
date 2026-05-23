@@ -10,7 +10,7 @@ package system;
 import net.sf.jni4net.inj.IClrProxy;
 
 @net.sf.jni4net.attributes.ClrType
-public class Object implements IClrProxy, system.IObject {
+public class Object implements IClrProxy, system.IObject, AutoCloseable {
     
 	private long clrHandle;
 
@@ -42,17 +42,22 @@ public class Object implements IClrProxy, system.IObject {
     }
 
 	@Override
+	public synchronized void close() {
+		if (clrHandle != 0) {
+			if (net.sf.jni4net.Bridge.isRegistered()) {
+				net.sf.jni4net.Bridge.DisposeClrHandle(clrHandle);
+			}
+			clrHandle = 0;
+		}
+	}
+
+	@Override
+	@Deprecated
 	protected void finalize() throws Throwable {
 		try {
-			if (clrHandle != 0) {
-                if (net.sf.jni4net.Bridge.isRegistered()){
-				    net.sf.jni4net.Bridge.DisposeClrHandle(clrHandle);
-                }
-				clrHandle = 0;
-			}
-		}catch (Throwable ignore){
-        }
-        finally {
+			close();
+		} catch (Throwable ignore) {
+		} finally {
 			super.finalize();
 		}
 	}

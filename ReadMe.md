@@ -57,3 +57,20 @@ How to use it on Linux:
 ----------------
 Linux x64 is supported with .NET 10, JDK 17 or JDK 21, and the CoreCLR native launcher.
 Mono is not supported.
+
+Known Issues
+----------------
+Java proxies for CLR objects retain their managed handles until they are closed
+or Java fallback finalization runs. Finalization is not prompt enough for code
+that creates large numbers of short-lived CLR proxies. Such code should close
+the proxies explicitly:
+
+```java
+try (system.DateTime today = system.DateTime.getToday()) {
+    System.out.println(today.toString());
+}
+```
+
+Callers may also invoke `today.close()` directly. Existing code remains
+compatible and finalization remains a fallback, but high-volume proxy creation
+without `close()` can exhaust memory.
