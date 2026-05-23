@@ -1,50 +1,42 @@
-﻿#region Copyright (C) 2009 by Pavel Savara
-
-/*
-This file is part of jni4net library - bridge between Java and .NET
-http://jni4net.sourceforge.net/
-
-This content is released under the (http://opensource.org/licenses/MIT) MIT License, see license/jni4net-MIT.txt.
-*/
-
-#endregion
-
 using System;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Security.Permissions;
+using selvin.exportdllattribute;
 
 namespace net.sf.jni4net
 {
-    internal class BridgeExport
+    internal static class BridgeExport
     {
-        [UnmanagedCallersOnly(EntryPoint = "Java_net_sf_jni4net_Bridge_initDotNet")]
-        internal static int initDotNet(IntPtr envi, IntPtr clazz)
+        [ExportDll("Java_net_sf_jni4net_Bridge_initDotNet", CallingConvention.StdCall)]
+        internal static int InitDotNet(IntPtr env, IntPtr clazz)
         {
             try
             {
-                string jni4net = typeof (BridgeExport).Assembly.Location.Replace(".w64.v40", "");
-                Assembly assembly = Assembly.LoadFile(jni4net);
-                Type type = assembly.GetType("net.sf.jni4net.Bridge");
-                MethodInfo method = type.GetMethod("initDotNetImpl", BindingFlags.NonPublic | BindingFlags.Static);
-                object res = method.Invoke(null, new object[] { envi, clazz });
-                return (int)res;
-            }
-            catch (NotSupportedException ex)
-            {
-                if (ex.Message.Contains("loadFromRemoteSources"))
+                string bridgePath = Path.Combine(
+                    Path.GetDirectoryName(typeof(BridgeExport).Assembly.Location),
+                    "jni4net.n-0.8.9.0.dll");
+                if (!File.Exists(bridgePath))
                 {
-                    Console.Error.WriteLine("Can't init BridgeExport: DLLs are marked as unsafe. Open file properties in windows explorer and click unblock.");
+                    Console.Error.WriteLine("jni4net Framework launcher: missing managed bridge: " + bridgePath);
+                    return -102;
                 }
-                Console.Error.WriteLine("Can't init BridgeExport:" + ex.Message);
-                Console.Error.WriteLine("Can't init BridgeExport:" + ex);
-                return -101;
+
+                Assembly assembly = Assembly.LoadFile(bridgePath);
+                Type type = assembly.GetType("net.sf.jni4net.Bridge", true);
+                MethodInfo method = type.GetMethod("initDotNetImpl", BindingFlags.NonPublic | BindingFlags.Static);
+                if (method == null)
+                {
+                    Console.Error.WriteLine("jni4net Framework launcher: managed initialization entry point was not found.");
+                    return -103;
+                }
+
+                return (int)method.Invoke(null, new object[] { env, clazz });
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine("Can't init BridgeExport:" + ex.Message);
-                Console.Error.WriteLine("Can't init BridgeExport:" + ex);
+                Console.Error.WriteLine("jni4net Framework launcher: " + ex.Message);
+                Console.Error.WriteLine(ex);
                 return -100;
             }
         }

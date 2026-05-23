@@ -27,37 +27,11 @@
             <artifactId>jni4net.n</artifactId>
             <version>0.8.9.0</version>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>net.sf.jni4net</groupId>
-            <artifactId>jni4net.n.w64.v20</artifactId>
-            <version>0.8.9.0</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.jni4net</groupId>
-            <artifactId>jni4net.n.w64.v40</artifactId>
-            <version>0.8.9.0</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.jni4net</groupId>
-            <artifactId>jni4net.n.w32.v40</artifactId>
-            <version>0.8.9.0</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.jni4net</groupId>
-            <artifactId>jni4net.n.w32.v20</artifactId>
-            <version>0.8.9.0</version>
-        </dependency> -->
         <dependency>
             <groupId>net.sf.jni4net</groupId>
             <artifactId>jni4net.tested.n</artifactId>
             <version>0.8.9.0</version>
         </dependency>
-        <!-- <dependency>
-            <groupId>net.sf.jni4net</groupId>
-            <artifactId>jni4net.test.j</artifactId>
-            <version>0.8.9.0</version>
-        </dependency> -->
 	</dependencies>
     <build>
         <sourceDirectory>src</sourceDirectory>

@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
 using System.Globalization;
+using System.IO;
 using System.Security.Permissions;
 using System.Threading;
 using net.sf.jni4net.jni;
@@ -36,17 +37,20 @@ namespace net.sf.jni4net.test
         [OneTimeSetUp]
         public virtual void Setup()
         {
-            string prefix = GetCurrentSourcePath(); 
-            prefix = prefix.Substring(0, prefix.IndexOf("jni4net.test.n"));
+            string stageDirectory = Environment.GetEnvironmentVariable("JNI4NET_TEST_STAGE");
+            if (string.IsNullOrEmpty(stageDirectory))
+            {
+                stageDirectory = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(GetCurrentSourcePath()), "..", "..", "target", "test-stage"));
+            }
 
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
             BridgeSetup setup=new BridgeSetup(false) { Verbose = true, Debug = false };
             setup.IgnoreJavaHome = true;
             setup.AddJVMOption("-Xmx512m");
-            setup.AddClassPath(prefix + "jni4net.j/target/classes");
-            setup.AddClassPath(prefix + "jni4net.tested.j/target/classes");
-            setup.AddClassPath(prefix + "jni4net.test.j/target/test-classes");
-            
+            setup.AddClassPath(Path.Combine(stageDirectory, "jni4net.j-0.8.9.0.jar"));
+            setup.AddClassPath(Path.Combine(stageDirectory, "jni4net.tested.j-0.8.9.0.jar"));
+            setup.AddClassPath(Path.Combine(stageDirectory, "jni4net.test.j.classes"));
+
             env = Bridge.CreateJVM(setup);
             Bridge.RegisterAssembly(typeof(TestBase).Assembly);
             Bridge.RegisterAssembly(typeof(JavaInstanceFields).Assembly);

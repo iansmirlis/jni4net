@@ -32,8 +32,8 @@ import system.collections.IEnumerator;
  */
 public class Program {
 	public static void main(String[] args) throws IOException {
-		// create bridge, with default setup
-		// it will lookup jni4net.n.dll next to jni4net.j.jar 
+		// Create the bridge. It finds the CoreCLR native launcher and runtime
+		// configuration beside jni4net.j.jar in the staged directory.
 		Bridge.setVerbose(true);
 		
 		Bridge.init();

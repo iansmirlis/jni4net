@@ -247,7 +247,8 @@ namespace net.sf.jni4net.jni
                     Environment.SetEnvironmentVariable("PATH", path);
                 }
             }
-            else  // On linux .net does not respect LD_LIBRARY_PATH (bug?), so we need to use DllImportResolver
+#if NET10_0_OR_GREATER
+            else  // On Linux .NET does not respect LD_LIBRARY_PATH, so resolve libjvm explicitly.
             {
                 NativeLibrary.SetDllImportResolver(typeof(JNI).Assembly, (name, assembly, searchPath) =>
                 {
@@ -258,6 +259,7 @@ namespace net.sf.jni4net.jni
                     return IntPtr.Zero;
                 });
             }
+#endif
 
         }
 
@@ -265,6 +267,7 @@ namespace net.sf.jni4net.jni
 
         private static partial class Dll
         {
+#if NET10_0_OR_GREATER
             [LibraryImport("jvm")]
             internal static partial JNIResult JNI_CreateJavaVM(out IntPtr pvm, out IntPtr penv, JavaVMInitArgs* args);
 
@@ -273,6 +276,16 @@ namespace net.sf.jni4net.jni
 
             [LibraryImport("jvm")]
             internal static partial JNIResult JNI_GetDefaultJavaVMInitArgs(JavaVMInitArgs* args);
+#else
+            [DllImport("jvm", CallingConvention = CallingConvention.Winapi)]
+            internal static extern JNIResult JNI_CreateJavaVM(out IntPtr pvm, out IntPtr penv, JavaVMInitArgs* args);
+
+            [DllImport("jvm", CallingConvention = CallingConvention.Winapi)]
+            internal static extern JNIResult JNI_GetCreatedJavaVMs(out IntPtr pvm, int size, out int size2);
+
+            [DllImport("jvm", CallingConvention = CallingConvention.Winapi)]
+            internal static extern JNIResult JNI_GetDefaultJavaVMInitArgs(JavaVMInitArgs* args);
+#endif
         }
 
         #endregion

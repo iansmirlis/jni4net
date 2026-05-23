@@ -1,12 +1,28 @@
-This is very basic sample for calling from C# to Java.
----
+# Hello World From .NET
 
-1) Make sure you have environment prepared properly. See `ReadMe.md` file in root.
-2) Start `build.cmd` - you may need to tweak paths inside to match your setup.
-3) Start `run.cmd` - you may need to tweak paths inside to match your setup.
-4) In Visual Studio open, compile `helloWorldFromCLR.csproj`
-	It will produce and copy following files
-    `samples\helloWorldFromCLR\work\helloWorldFromCLR.exe`
-    `samples\helloWorldFromCLR\work\jni4net.n-0.x.0.0.dll`
-    `samples\helloWorldFromCLR\work\jni4net.j-0.x.0.0.jar`
-5) Start and step-by-step debug `Program.cs`
+This sample starts a JVM from a .NET 10 process and invokes Java library calls.
+Build and stage the repository outputs first by following the root
+`ReadMe.md`.
+
+From the repository root on Linux:
+
+```bash
+dotnet build content/samples/helloWorldFromCLR/helloWorldFromCLR.csproj --configuration Release
+cp target/test-stage/jni4net.j-0.8.9.0.jar \
+  content/samples/helloWorldFromCLR/bin/Release/net10.0/
+JAVA_HOME=/path/to/jdk-17-or-21 \
+  dotnet run --project content/samples/helloWorldFromCLR/helloWorldFromCLR.csproj \
+  --configuration Release --no-build
+```
+
+From PowerShell on Windows:
+
+```powershell
+dotnet build content/samples/helloWorldFromCLR/helloWorldFromCLR.csproj --configuration Release
+Copy-Item target/test-stage/jni4net.j-0.8.9.0.jar content/samples/helloWorldFromCLR/bin/Release/net10.0/
+$env:JAVA_HOME = 'C:\path\to\jdk-17-or-21'
+dotnet run --project content/samples/helloWorldFromCLR/helloWorldFromCLR.csproj --configuration Release --no-build
+```
+
+The sample adds the staged Java bridge jar to the JVM classpath and prints
+`Hello Java world!` followed by Java system properties.

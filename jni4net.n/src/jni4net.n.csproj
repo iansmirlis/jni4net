@@ -1,12 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFrameworks>net10.0;net48</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateRuntimeConfigurationFiles Condition="'$(TargetFramework)' == 'net10.0'">true</GenerateRuntimeConfigurationFiles>
+    <CopyLocalLockFileAssemblies Condition="'$(TargetFramework)' == 'net10.0'">true</CopyLocalLockFileAssemblies>
+    <AssemblyName Condition="'$(TargetFramework)' == 'net48'">jni4net.n-0.8.9.0</AssemblyName>
+    <Version Condition="'$(TargetFramework)' == 'net48'">0.8.9.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.CodeDom" Version="7.0.0" />
+    <PackageReference Include="System.CodeDom" Version="10.0.0" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" PrivateAssets="all" Condition="'$(TargetFramework)' == 'net48'" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <Compile Remove="CoreClrEntryPoint.cs" />
   </ItemGroup>
 
 </Project>

@@ -1,9 +1,24 @@
-This is very basic sample for calling from Java to .NET
----
+# Hello World From Java
 
-1) Make sure you have environment prepared properly. See `ReadMe.md` file in root.
-2) Run `helloWorldFromJVM\build.cmd` to build the sample, you may need to tweak paths inside to match your setup.
-3) Run `helloWorldFromJVM\run.cmd` - you may need to tweak paths inside to match your setup.
-4) Run Ant to build the sample
-5) Build it from any Java IDE
-6) Start it and step-by-step debug in Java IDE
+This sample loads .NET 10 from a JVM through the native CoreCLR launcher. Build
+and stage repository outputs first by following the root `ReadMe.md`.
+
+From the sample directory on Linux:
+
+```bash
+javac --release 8 -cp ../../../target/test-stage/jni4net.j-0.8.9.0.jar \
+  -d target/classes java/Program.java
+java -cp ../../../target/test-stage/jni4net.j-0.8.9.0.jar:target/classes Program
+```
+
+From PowerShell in the sample directory on Windows:
+
+```powershell
+javac --release 8 -cp ../../../target/test-stage/jni4net.j-0.8.9.0.jar -d target/classes java/Program.java
+java -cp "../../../target/test-stage/jni4net.j-0.8.9.0.jar;target/classes" Program
+```
+
+Because `jni4net.j-0.8.9.0.jar`, the native launcher and
+`jni4net.n.runtimeconfig.json` are together in `target/test-stage`,
+`Bridge.init()` discovers the platform launcher automatically. The sample
+prints `Hello .NET world!` followed by managed environment information.

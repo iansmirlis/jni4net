@@ -1,5 +1,7 @@
 jni4net.iws
 **/target/**
+**/bin/**
+**/obj/**
 tools/keys/jni4net.snk
 tools/lib/
 jni4net.n/src/bin/Debug/net7.0/jni4net.n.deps.json

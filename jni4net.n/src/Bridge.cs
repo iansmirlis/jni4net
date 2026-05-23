@@ -15,6 +15,9 @@ using System.IO;
 using System.Net.Mime;
 using System.Reflection;
 using System.Runtime.InteropServices;
+#if NET10_0_OR_GREATER
+using System.Runtime.Loader;
+#endif
 using System.Security.Permissions;
 using java.lang;
 using net.sf.jni4net.jni;
@@ -205,19 +208,18 @@ namespace net.sf.jni4net
         
         public static void LoadAndRegisterAssemblyFrom(File assemblyFile)
         {
-            string assemblyPath = new Uri(assemblyFile.getCanonicalFile().toURI().toString()).LocalPath;
-
+            string assemblyPath = assemblyFile.getCanonicalPath();
             Assembly assembly;
             if (System.IO.File.Exists(assemblyPath))
             {
-                assembly = Assembly.LoadFrom(assemblyPath);
+                assembly = LoadFromBridgeContext(assemblyPath);
             }
             else
             {
                 string current = Path.Combine(homeDir, assemblyPath);
                 if (System.IO.File.Exists(current))
                 {
-                    assembly = Assembly.LoadFrom(current);
+                    assembly = LoadFromBridgeContext(current);
                 }
                 else
                 {
@@ -230,19 +232,18 @@ namespace net.sf.jni4net
         
         public static void LoadAndRegisterAssemblyFrom(File assemblyFile, ClassLoader classLoader)
         {
-            string assemblyPath = new Uri(assemblyFile.getCanonicalFile().toURI().toString()).LocalPath;
-
+            string assemblyPath = assemblyFile.getCanonicalPath();
             Assembly assembly;
             if (System.IO.File.Exists(assemblyPath))
             {
-                assembly = Assembly.LoadFrom(assemblyPath);
+                assembly = LoadFromBridgeContext(assemblyPath);
             }
             else
             {
                 string current = Path.Combine(homeDir, assemblyPath);
                 if (System.IO.File.Exists(current))
                 {
-                    assembly = Assembly.LoadFrom(current);
+                    assembly = LoadFromBridgeContext(current);
                 }
                 else
                 {
@@ -268,6 +269,16 @@ namespace net.sf.jni4net
             {
                 Console.WriteLine("loaded " + assembly + " from " + assembly.Location);
             }
+        }
+
+        private static Assembly LoadFromBridgeContext(string path)
+        {
+#if NET10_0_OR_GREATER
+            AssemblyLoadContext context = AssemblyLoadContext.GetLoadContext(typeof(Bridge).Assembly);
+            return context == null ? Assembly.LoadFrom(path) : context.LoadFromAssemblyPath(path);
+#else
+            return Assembly.LoadFrom(path);
+#endif
         }
 
         public static void SetSystemClassLoader(ClassLoader classLoader)

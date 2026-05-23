@@ -1,11 +1,35 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputType>Library</OutputType>
+    <AssemblyName>jni4net.n.w64.v40-0.8.9.0</AssemblyName>
+    <Version>0.8.9.0</Version>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <OutputPath>..\target\</OutputPath>
+    <OutputPath>..\target\$(Configuration)\</OutputPath>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>../../tools/keys/jni4net.snk</AssemblyOriginatorKeyFile>
+    <ExporterPath>$(MSBuildProjectDirectory)\..\..\tools\lib\selvin.exportdll-0.2.5.0.exe</ExporterPath>
+    <IldasmPath Condition="'$(IldasmPath)' == ''">$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\ildasm.exe</IldasmPath>
+    <IlasmPath Condition="'$(IlasmPath)' == ''">$(WINDIR)\Microsoft.NET\Framework64\v4.0.30319\ilasm.exe</IlasmPath>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="selvin.exportdllattribute">
+      <HintPath>..\..\tools\lib\selvin.exportdllattribute-0.2.5.0.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <Target Name="ExportJniEntryPoint" AfterTargets="Build" Condition="'$(OS)' == 'Windows_NT'">
+    <Error Condition="!Exists('$(ExporterPath)')" Text="Prepare tools/lib/selvin.exportdll-0.2.5.0.exe before building the Framework launcher." />
+    <Error Condition="!Exists('$(IldasmPath)')" Text="Cannot find .NET Framework ildasm.exe at $(IldasmPath). Set IldasmPath explicitly." />
+    <Error Condition="!Exists('$(IlasmPath)')" Text="Cannot find .NET Framework ilasm.exe at $(IlasmPath). Set IlasmPath explicitly." />
+    <Exec Command="&quot;$(ExporterPath)&quot; &quot;$(TargetPath)&quot; &quot;$(IldasmPath)&quot; &quot;$(IlasmPath)&quot; &quot;$(MSBuildProjectDirectory)\..\..\tools\keys\jni4net.snk&quot; /Release /x64" />
+  </Target>
 
 </Project>

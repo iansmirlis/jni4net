@@ -1,0 +1,126 @@
+name: CoreCLR Bridge
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  integration:
+    name: ${{ matrix.os }} / JDK ${{ matrix.java }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        java: ['17', '21']
+    env:
+      DOTNET_TEST_FILTER: FullyQualifiedName~CallInstanceFieldsTest|FullyQualifiedName~CallInstanceMethodsTest|FullyQualifiedName~CallStaticMethodsTest|FullyQualifiedName~StaticFieldTest|FullyQualifiedName~ExceptionsTest|FullyQualifiedName~CallBackTest|FullyQualifiedName~TestInterfaces|FullyQualifiedName~TestDeleagtes|FullyQualifiedName~BasicTests.PrimitiveObjects|FullyQualifiedName~BasicTests.WrapClrString1|FullyQualifiedName~BasicTests.Length|FullyQualifiedName~BasicTests.StringConstructor
+    steps:
+      - name: Check out sources
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build Java modules
+        run: mvn --batch-mode --no-transfer-progress -pl jni4net.j,jni4net.tested.j,jni4net.test.j -am -DskipTests package
+
+      - name: Build managed solution
+        run: dotnet build jni4net.sln --configuration Release --verbosity minimal
+
+      - name: Configure native launcher
+        run: cmake -S jni4net.coreclr -B jni4net.coreclr/target/build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build native launcher
+        run: cmake --build jni4net.coreclr/target/build --config Release
+
+      - name: Stage Linux integration inputs
+        if: runner.os == 'Linux'
+        run: cmake -DREPO_ROOT="${{ github.workspace }}" -DNATIVE_LIBRARY="${{ github.workspace }}/jni4net.coreclr/target/build/libjni4net.coreclr.so" -DCONFIGURATION=Release -P eng/stage-tests.cmake
+
+      - name: Stage Windows integration inputs
+        if: runner.os == 'Windows'
+        run: cmake -DREPO_ROOT="${{ github.workspace }}" -DNATIVE_LIBRARY="${{ github.workspace }}/jni4net.coreclr/target/build/Release/jni4net.coreclr.dll" -DCONFIGURATION=Release -P eng/stage-tests.cmake
+
+      - name: Test Java to .NET
+        run: mvn --batch-mode --no-transfer-progress -pl jni4net.test.j -am test "-Djni4net.test.stage=${{ github.workspace }}/target/test-stage"
+
+      - name: Test .NET to Java
+        run: dotnet test jni4net.test.n/src/jni4net.test.n.csproj --framework net10.0 --configuration Release --no-build --verbosity minimal --filter "${{ env.DOTNET_TEST_FILTER }}"
+        env:
+          JNI4NET_TEST_STAGE: ${{ github.workspace }}/target/test-stage
+
+      - name: Package Linux CoreCLR release
+        if: runner.os == 'Linux' && matrix.java == '21'
+        run: cmake -DREPO_ROOT="${{ github.workspace }}" -DRUNTIME=coreclr -DPLATFORM=linux-x64 -DNATIVE_LIBRARY="${{ github.workspace }}/jni4net.coreclr/target/build/libjni4net.coreclr.so" -DCONFIGURATION=Release -P eng/package-runtime.cmake
+
+      - name: Upload Linux CoreCLR release
+        if: runner.os == 'Linux' && matrix.java == '21'
+        uses: actions/upload-artifact@v4
+        with:
+          name: jni4net-0.8.9.0-coreclr-linux-x64
+          path: target/release/jni4net-0.8.9.0-coreclr-linux-x64.zip
+          if-no-files-found: error
+
+      - name: Package Windows CoreCLR release
+        if: runner.os == 'Windows' && matrix.java == '21'
+        run: cmake -DREPO_ROOT="${{ github.workspace }}" -DRUNTIME=coreclr -DPLATFORM=windows-x64 -DNATIVE_LIBRARY="${{ github.workspace }}/jni4net.coreclr/target/build/Release/jni4net.coreclr.dll" -DCONFIGURATION=Release -P eng/package-runtime.cmake
+
+      - name: Upload Windows CoreCLR release
+        if: runner.os == 'Windows' && matrix.java == '21'
+        uses: actions/upload-artifact@v4
+        with:
+          name: jni4net-0.8.9.0-coreclr-windows-x64
+          path: target/release/jni4net-0.8.9.0-coreclr-windows-x64.zip
+          if-no-files-found: error
+
+      - name: Prepare .NET Framework launcher tools
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./eng/prepare-framework-tools.ps1
+
+      - name: Build .NET Framework x64 launcher
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $ildasm = Get-ChildItem -Path "${env:ProgramFiles(x86)}\Microsoft SDKs\Windows" -Filter "ildasm.exe" -Recurse |
+            Where-Object { $_.FullName -match "NETFX 4\.8 Tools" } |
+            Select-Object -First 1
+          if ($null -eq $ildasm) {
+            throw "Could not find the .NET Framework 4.8 ildasm.exe tool."
+          }
+          dotnet build jni4net.n.w64.v40/src/jni4net.n.w64.v40.csproj --configuration Release --verbosity minimal "-p:IldasmPath=$($ildasm.FullName)"
+
+      - name: Stage .NET Framework integration inputs
+        if: runner.os == 'Windows'
+        run: cmake -DREPO_ROOT="${{ github.workspace }}" -DFRAMEWORK_LAUNCHER="${{ github.workspace }}/jni4net.n.w64.v40/target/Release/jni4net.n.w64.v40-0.8.9.0.dll" -DCONFIGURATION=Release -P eng/stage-framework-tests.cmake
+
+      - name: Test Java to .NET Framework
+        if: runner.os == 'Windows'
+        run: mvn --batch-mode --no-transfer-progress -pl jni4net.test.j -am test -Dtest=TestClr,TestFrameworkBootstrapFailures -Dsurefire.failIfNoSpecifiedTests=false "-Djni4net.test.stage=${{ github.workspace }}/target/test-stage-framework" -Djni4net.test.launcher=jni4net.n.w64.v40-0.8.9.0.dll -Djni4net.test.managedAssembly=jni4net.tested.n-0.8.9.0.dll -Djni4net.test.framework=true
+
+      - name: Test .NET Framework to Java
+        if: runner.os == 'Windows'
+        run: dotnet test jni4net.test.n/src/jni4net.test.n.csproj --framework net48 --configuration Release --no-build --verbosity minimal --filter "${{ env.DOTNET_TEST_FILTER }}"
+        env:
+          JNI4NET_TEST_STAGE: ${{ github.workspace }}/target/test-stage-framework
+
+      - name: Package .NET Framework x64 release
+        if: runner.os == 'Windows' && matrix.java == '21'
+        run: cmake -DREPO_ROOT="${{ github.workspace }}" -DRUNTIME=framework -DPLATFORM=windows-x64 -DFRAMEWORK_LAUNCHER="${{ github.workspace }}/jni4net.n.w64.v40/target/Release/jni4net.n.w64.v40-0.8.9.0.dll" -DCONFIGURATION=Release -P eng/package-runtime.cmake
+
+      - name: Upload .NET Framework x64 release
+        if: runner.os == 'Windows' && matrix.java == '21'
+        uses: actions/upload-artifact@v4
+        with:
+          name: jni4net-0.8.9.0-net48-windows-x64
+          path: target/release/jni4net-0.8.9.0-net48-windows-x64.zip
+          if-no-files-found: error

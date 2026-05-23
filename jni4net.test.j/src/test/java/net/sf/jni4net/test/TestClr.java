@@ -41,9 +41,17 @@ public class TestClr {
 	public static void setup() throws IOException {
 		//Bridge.setVerbose(true);
 		//Bridge.setDebug(true);
-		Bridge.init(new File("../jni4net.tested.n/target"));
-		final File path = new File("../jni4net.tested.n/target/jni4net.tested.n-" + Bridge.getVersion() + ".dll").getCanonicalFile();
-		Bridge.LoadAndRegisterAssemblyFrom(path);
+		final String configuredStage = System.getProperty("jni4net.test.stage", "../target/test-stage");
+		final File stage = new File(configuredStage).getCanonicalFile();
+		final String launcher = System.getProperty("jni4net.test.launcher");
+		if (launcher == null) {
+			Bridge.init(stage);
+		} else {
+			Bridge.init(new File(stage, launcher).getCanonicalFile());
+		}
+		final String assembly = System.getProperty("jni4net.test.managedAssembly", "jni4net.tested.n.dll");
+		final File path = new File(stage, assembly).getCanonicalFile();
+		Bridge.LoadAndRegisterAssemblyFrom(path, TestClr.class.getClassLoader());
 	}
 
 
