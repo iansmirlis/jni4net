@@ -88,7 +88,11 @@ namespace net.sf.jni4net.jni
                 }
             }
 
+#if NET10_0_OR_GREATER
+            if (OperatingSystem.IsWindows())
+#else
             if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+#endif
             {
                 string arch = Environment.GetEnvironmentVariable(ARCH_ENV);
                 var is64Arch = (arch != null && arch.Contains("64"));
