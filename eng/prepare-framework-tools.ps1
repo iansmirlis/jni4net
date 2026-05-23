@@ -34,7 +34,18 @@ if ((Get-FileHash -Algorithm SHA256 $attributeDll).Hash -ne $expectedAttributeHa
     throw "Unexpected checksum for selvin.exportdllattribute-0.2.5.0.dll."
 }
 
-Copy-Item -Force $exporterDll (Join-Path $toolsDirectory "selvin.exportdll-0.2.5.0.exe")
+$exporterExe = Join-Path $toolsDirectory "selvin.exportdll-0.2.5.0.exe"
+Copy-Item -Force $exporterDll $exporterExe
+
+$exporterConfig = @'
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <startup>
+    <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.8"/>
+  </startup>
+</configuration>
+'@
+Set-Content -Path "$exporterExe.config" -Value $exporterConfig -Encoding ASCII
 
 $keyPath = Join-Path $keysDirectory "jni4net.snk"
 if (!(Test-Path $keyPath)) {
