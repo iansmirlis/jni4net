@@ -45,7 +45,7 @@ namespace net.sf.jni4net.test
         public void testStatic()
         {
             int res = JavaCallBack.callBackStatic(1, 3);
-            Assert.AreEqual(4,res);
+            Assert.That(res, Is.EqualTo(4));
         }
     }
 }

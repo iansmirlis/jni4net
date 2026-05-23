@@ -15,7 +15,7 @@ namespace net.sf.jni4net.test
             Assert.IsNotNull(del);
 
             object res = del.Invoke<object>("Invoke", "(ILjava/lang/String;)Lsystem/Object;", 1, "ahoj");
-            Assert.AreEqual("ahoj1",res);
+            Assert.That(res, Is.EqualTo("ahoj1"));
         }
 
         object TestDelegateImpl(int i, string s)
@@ -30,7 +30,7 @@ namespace net.sf.jni4net.test
             tested.TestDelegate del = JavaCallStaticMethods._class.Invoke<tested.TestDelegate>("testDelegate", "()Lnet/sf/jni4net/tested/TestDelegate;");
             Assert.IsNotNull(del);
             var res = del.Invoke(1, "ahoj");
-            Assert.AreEqual("ahoj1", res);
+            Assert.That(res, Is.EqualTo("ahoj1"));
         }
 
         [Test]

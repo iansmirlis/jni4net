@@ -57,28 +57,28 @@ namespace net.sf.jni4net.test
         public void CallMeFromJavaComparison()
         {
             int res = JavaCallBack.callBackComparison();
-            Assert.AreEqual(1, res);
+            Assert.That(res, Is.EqualTo(1));
         }
 
         [Test]
         public void CallMeFromJavaComparison2()
         {
             int res = JavaCallBack.callBackComparison2();
-            Assert.AreEqual(1,res);
+            Assert.That(res, Is.EqualTo(1));
         }
 
         [Test]
         public void CallBackRun()
         {
             int res = JavaCallBack.callBackRun();
-            Assert.AreEqual(3, res);
+            Assert.That(res, Is.EqualTo(3));
         }
 
         [Test]
         public void CallBackStatic()
         {
             int res = JavaCallBack.callBackStatic(1,3);
-            Assert.AreEqual(4, res);
+            Assert.That(res, Is.EqualTo(4));
         }
 
         [Test]

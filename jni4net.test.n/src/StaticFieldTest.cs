@@ -37,7 +37,7 @@ namespace net.sf.jni4net.test
         public void byteField()
         {
             byte data = JavaStaticFields.byteField;
-            Assert.AreEqual(6, data);
+            Assert.That(data, Is.EqualTo(6));
         }
 
         [Test]
@@ -51,7 +51,7 @@ namespace net.sf.jni4net.test
         public void intField()
         {
             int data = JavaStaticFields.intField;
-            Assert.AreEqual(1033, data);
+            Assert.That(data, Is.EqualTo(1033));
         }
 
         [Test]

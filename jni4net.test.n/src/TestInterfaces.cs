@@ -28,10 +28,10 @@ namespace net.sf.jni4net.test
             var cw1 = new CWithJavaInterface(1);
             var cw2 = new CWithJavaInterface(2);
             Object other = (Object)Bridge.WrapCLR(cw2);
-            Assert.AreEqual(1, cw1.compareTo(other));
+            Assert.That(cw1.compareTo(other), Is.EqualTo(1));
 
             cw2.run();
-            Assert.AreEqual(3, cw2.Value);
+            Assert.That(cw2.Value, Is.EqualTo(3));
         }
 
         [Test]
@@ -41,10 +41,10 @@ namespace net.sf.jni4net.test
             var cw2 = new CWithJavaInterfaceUnreg(2);
 
             Object other = (Object)Bridge.WrapCLR(cw2);
-            Assert.AreEqual(1, cw1.compareTo(other));
+            Assert.That(cw1.compareTo(other), Is.EqualTo(1));
 
             cw2.run();
-            Assert.AreEqual(3, cw2.Value);
+            Assert.That(cw2.Value, Is.EqualTo(3));
         }
 
         [Test]
@@ -55,10 +55,10 @@ namespace net.sf.jni4net.test
 
             int res = cw1.CompareTo(cw2);
 
-            Assert.AreEqual(1, res);
+            Assert.That(res, Is.EqualTo(1));
 
             cw2.run();
-            Assert.AreEqual(3, cw2.getValue());
+            Assert.That(cw2.getValue(), Is.EqualTo(3));
         }
 
         [Test]
@@ -81,9 +81,9 @@ namespace net.sf.jni4net.test
             var cw1 = "sdfd";
             Object proxy = Bridge.WrapCLR(cw1);
             Class clazz = proxy.getClass();
-            Assert.AreEqual(System.String_._class, clazz);
+            Assert.That(clazz, Is.EqualTo(System.String_._class));
             object res = Bridge.UnwrapCLR<object>(proxy);
-            Assert.AreSame(cw1, res);
+            Assert.That(res, Is.SameAs(cw1));
         }
 
         [Test]
@@ -94,7 +94,7 @@ namespace net.sf.jni4net.test
             Class clazz = proxy.getClass();
             //TODO Assert.AreEqual(System.Int32_._class, clazz);
             object res = Bridge.UnwrapCLR<object>(proxy);
-            Assert.AreEqual(cw1, res);
+            Assert.That(res, Is.EqualTo(cw1));
         }
 
         [Test]
@@ -103,10 +103,10 @@ namespace net.sf.jni4net.test
             IComparable cw1 = testInstance.createJWithClrInterfaceUnreg(1);
             IComparable cw2 = testInstance.createJWithClrInterfaceUnreg(2);
 
-            Assert.AreEqual(1, cw1.CompareTo(cw2));
+            Assert.That(cw1.CompareTo(cw2), Is.EqualTo(1));
 
             ((Object) cw2).Invoke<int>("run", "()V");
-            Assert.AreEqual(3, ((Object)cw2).Invoke<int>("getValue","()I"));
+            Assert.That(((Object)cw2).Invoke<int>("getValue","()I"), Is.EqualTo(3));
         }
 
         [Test]
@@ -119,10 +119,10 @@ namespace net.sf.jni4net.test
             cw1.run();
             var cw2 = testInstance.createJWithClrInterfaceUnreg(4);
 
-            Assert.AreEqual(0, cw2.CompareTo(cw1));
+            Assert.That(cw2.CompareTo(cw1), Is.EqualTo(0));
 
             cw1.run();
-            Assert.AreEqual((String)"5", (String)cw1.ToString());
+            Assert.That((String)cw1.ToString(), Is.EqualTo((String)"5"));
         }
 
         [Test]
@@ -136,10 +136,10 @@ namespace net.sf.jni4net.test
 
             IComparable comparable = Bridge.Cast<IComparable>(runnable);
 
-            Assert.AreEqual(0, comparable.CompareTo(cw2));
+            Assert.That(comparable.CompareTo(cw2), Is.EqualTo(0));
 
             runnable.run();
-            Assert.AreEqual((String)"5", (String)runnable.ToString());
+            Assert.That((String)runnable.ToString(), Is.EqualTo((String)"5"));
         }
 
         [Test]
@@ -151,7 +151,7 @@ namespace net.sf.jni4net.test
             cwi.run();
             cw.run();
             CWithJavaInterface tt = cw as CWithJavaInterface;
-            Assert.AreEqual(6, tt.Value);
+            Assert.That(tt.Value, Is.EqualTo(6));
         }
 
         [Test]

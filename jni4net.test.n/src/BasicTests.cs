@@ -78,7 +78,7 @@ namespace net.sf.jni4net.test
         {
             Object integer = Bridge.WrapCLR(13);
             int integ = Bridge.UnwrapCLR<int>(integer);
-            Assert.AreEqual(13, integ);
+            Assert.That(integ, Is.EqualTo(13));
         }
 
         [Test]
@@ -86,7 +86,7 @@ namespace net.sf.jni4net.test
         {
             Object str1 = Bridge.WrapCLR("jni4net");
             string str2 = Bridge.UnwrapCLR<string>(str1);
-            Assert.AreEqual("jni4net", str2);
+            Assert.That(str2, Is.EqualTo("jni4net"));
         }
 
         [Test]
@@ -94,7 +94,7 @@ namespace net.sf.jni4net.test
         {
             var b = new Byte(7);
             byte value = b.byteValue();
-            Assert.AreEqual(7, value);
+            Assert.That(value, Is.EqualTo(7));
         }
 
         [Test]
@@ -102,11 +102,11 @@ namespace net.sf.jni4net.test
         {
             var outStream = env.GetStaticField<Object>("java/lang/System", "out", "Ljava/io/PrintStream;");
             var outStream2 = env.GetStaticField<Object>("java/lang/System", "out", "Ljava/io/PrintStream;");
-            Assert.AreEqual(outStream2, outStream);
+            Assert.That(outStream, Is.EqualTo(outStream2));
             String s1 = env.NewString("test");
             String s2 = env.NewString("test");
-            Assert.AreNotSame(s1, s2);
-            Assert.AreEqual(s1, s2);
+            Assert.That(s2, Is.Not.SameAs(s1));
+            Assert.That(s2, Is.EqualTo(s1));
         }
 
         [Test]
@@ -187,7 +187,7 @@ namespace net.sf.jni4net.test
         public void Length()
         {
             String s1 = env.NewString("test");
-            Assert.AreEqual(4, s1.length());
+            Assert.That(s1.length(), Is.EqualTo(4));
         }
 
         [Test]
@@ -203,7 +203,7 @@ namespace net.sf.jni4net.test
             Class clazz = env.FindClass("java/lang/Integer");
             var intType = clazz.GetFieldValue<Object>("TYPE", "Ljava/lang/Class;");
             Class intType2 = Class.getPrimitiveClass("int");
-            Assert.AreEqual(intType2, intType);
+            Assert.That(intType, Is.EqualTo(intType2));
         }
 
         [Test]
@@ -218,7 +218,7 @@ namespace net.sf.jni4net.test
         public void StaticString()
         {
             String s1 = env.NewString("test");
-            Assert.AreEqual(4, s1.length());
+            Assert.That(s1.length(), Is.EqualTo(4));
         }
 
         [Test]
@@ -243,7 +243,7 @@ namespace net.sf.jni4net.test
             Object proxy = Bridge.WrapCLR(builder);
             long handle = ((IClrProxy)proxy).getClrHandle();
             System.Text.StringBuilder res = Bridge.UnwrapCLR<System.Text.StringBuilder>(proxy);
-            Assert.AreSame(builder, res);
+            Assert.That(res, Is.SameAs(builder));
         }
 
         private byte[] PrepareData()
@@ -265,7 +265,7 @@ namespace net.sf.jni4net.test
             using (var br = new BinaryReader(new MemoryStream(myLovelyData, 0, 2048, true, true), Encoding.Unicode))
             {
                 br.BaseStream.Seek(0xfe, SeekOrigin.Begin);
-                Assert.AreEqual(0xfe, br.ReadByte());
+                Assert.That(br.ReadByte(), Is.EqualTo(0xfe));
                 br.BaseStream.Seek(0x1CC, SeekOrigin.Begin);
                 expected = br.ReadChar();
             }
@@ -282,15 +282,15 @@ namespace net.sf.jni4net.test
             ByteBuffer buffer = JNIEnv.ThreadEnv.NewDirectByteBuffer(ptr, 2048);
             buffer.order(ByteOrder.LITTLE_ENDIAN);
 
-            Assert.AreEqual(0x00, buffer.get());
-            Assert.AreEqual(0x01, buffer.get());
+            Assert.That(buffer.get(), Is.EqualTo(0x00));
+            Assert.That(buffer.get(), Is.EqualTo(0x01));
             buffer.position(0xfe);
-            Assert.AreEqual(0xfe, buffer.get());
-            Assert.AreEqual(0xff, buffer.get());
+            Assert.That(buffer.get(), Is.EqualTo(0xfe));
+            Assert.That(buffer.get(), Is.EqualTo(0xff));
             buffer.position(0x1CC);
-            Assert.AreEqual('�', buffer.getChar());
+            Assert.That(buffer.getChar(), Is.EqualTo('�'));
             buffer.position(0x1aa);
-            Assert.AreEqual(0.112233d, buffer.getDouble());
+            Assert.That(buffer.getDouble(), Is.EqualTo(0.112233d));
         }
 
 
@@ -351,15 +351,15 @@ namespace net.sf.jni4net.test
 
             nio.ByteBufferN buffer = nio.ByteBufferN.wrap(myLovelyData);
 
-            Assert.AreEqual(0x00, buffer.get());
-            Assert.AreEqual(0x01, buffer.get());
+            Assert.That(buffer.get(), Is.EqualTo(0x00));
+            Assert.That(buffer.get(), Is.EqualTo(0x01));
             buffer.position(0xfe);
-            Assert.AreEqual(0xfe, buffer.get());
-            Assert.AreEqual(0xff, buffer.get());
+            Assert.That(buffer.get(), Is.EqualTo(0xfe));
+            Assert.That(buffer.get(), Is.EqualTo(0xff));
             buffer.position(0x1CC);
-            Assert.AreEqual('�', buffer.getChar());
+            Assert.That(buffer.getChar(), Is.EqualTo('�'));
             buffer.position(0x1aa);
-            Assert.AreEqual(0.112233d, buffer.getDouble());
+            Assert.That(buffer.getDouble(), Is.EqualTo(0.112233d));
         }
 
         [Test]
@@ -377,7 +377,7 @@ namespace net.sf.jni4net.test
             {
                 cnt++;
             }
-            Assert.AreEqual(javaSystemProperties.size(), cnt);
+            Assert.That(cnt, Is.EqualTo(javaSystemProperties.size()));
         }
 
         [Test]

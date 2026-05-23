@@ -79,7 +79,7 @@ namespace net.sf.jni4net.test
             Object[] objects=new Object[3];
             objects[0] = (String)"test6857";
             Object[] res = testInstance.objectArray(objects);
-            Assert.AreEqual((String)"test6857", res[1]);
+            Assert.That(res[1], Is.EqualTo((String)"test6857"));
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace net.sf.jni4net.test
             String[] objects = new String[3];
             objects[0] = "test6857";
             String[] res = testInstance.stringArray(objects);
-            Assert.AreEqual((String)"test6857", res[1]);
+            Assert.That(res[1], Is.EqualTo((String)"test6857"));
         }
 
         
@@ -107,7 +107,7 @@ namespace net.sf.jni4net.test
             int[] objects = new int[3];
             objects[0] = 6857;
             int[] res = testInstance.intArray(objects);
-            Assert.AreEqual(6857, res[1]);
+            Assert.That(res[1], Is.EqualTo(6857));
         }
 
         [Test]
@@ -126,7 +126,7 @@ namespace net.sf.jni4net.test
             bool[] objects = new bool[3];
             objects[0] = true;
             bool[] res = testInstance.booleanArray(objects);
-            Assert.AreEqual(true, res[1]);
+            Assert.That(res[1], Is.EqualTo(true));
         }
 
         /*[Test]
@@ -135,7 +135,7 @@ namespace net.sf.jni4net.test
             ByteBuffer bb = ByteBuffer.allocate(8);
             objects[0] = 6857;
             int[] res = testInstance.intArray(objects);
-            Assert.AreEqual(6857, res[1]);
+            Assert.That(res[1], Is.EqualTo(6857));
         }*/
 
         /*
@@ -149,7 +149,7 @@ namespace net.sf.jni4net.test
                 //Console.WriteLine(items);
                 c++;
             }
-            Assert.AreEqual(3,c);
+            Assert.That(c, Is.EqualTo(3));
         }*/
     }
 }
