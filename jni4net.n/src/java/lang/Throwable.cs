@@ -39,6 +39,9 @@ namespace java.lang
             }
         }
 
+#if NET10_0_OR_GREATER
+        [Obsolete("Formatter-based serialization is retained for compatibility.")]
+#endif
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             using (var bao = Adapt.Disposable(new ByteArrayOutputStream()))

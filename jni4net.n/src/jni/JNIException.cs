@@ -17,9 +17,15 @@ namespace net.sf.jni4net.jni
     [Serializable]
     public class JNIException : Exception
     {
+#if NET10_0_OR_GREATER
+#pragma warning disable SYSLIB0051 // Retain the legacy serialization constructor for compatibility.
+#endif
         protected JNIException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
+#if NET10_0_OR_GREATER
+#pragma warning restore SYSLIB0051
+#endif
 
         public JNIException()
         {
