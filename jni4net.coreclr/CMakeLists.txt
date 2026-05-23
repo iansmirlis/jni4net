@@ -38,6 +38,7 @@ target_include_directories(jni4net_coreclr PRIVATE "${NETHOST_NATIVE_DIR}" ${JNI
 target_link_libraries(jni4net_coreclr PRIVATE "${NETHOST_NATIVE_DIR}/${NETHOST_LIBRARY_NAME}" ${CMAKE_DL_LIBS})
 
 if(MSVC)
+    set_property(TARGET jni4net_coreclr PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded")
     target_compile_options(jni4net_coreclr PRIVATE /W4)
 else()
     target_compile_options(jni4net_coreclr PRIVATE -Wall -Wextra -Wpedantic)
