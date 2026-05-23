@@ -110,7 +110,7 @@ namespace net.sf.jni4net.proxygen.generator
             sb.Replace("__event_add__ = global", " += global");
             sb.Replace("__event_remove__ = global", " -= global");
 
-            sb.Insert(0, "// Generated proxy hierarchies intentionally preserve members from the source type.\r\n#pragma warning disable CS0108, CS0109, CS0114\r\n\r\n");
+            sb.Insert(0, "// Generated proxies intentionally retain legacy APIs exposed by the source type.\r\n#pragma warning disable CS0618, SYSLIB0005, SYSLIB0010, SYSLIB0012, SYSLIB0018, SYSLIB0050, SYSLIB0051\r\n\r\n// Generated proxy hierarchies intentionally preserve members from the source type.\r\n#pragma warning disable CS0108, CS0109, CS0114\r\n\r\n");
 
             if (type != Repository.javaLangThrowable && type != Repository.javaLangObject)
             {
