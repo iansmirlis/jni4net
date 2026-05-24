@@ -60,6 +60,9 @@ Mono is not supported.
 
 Known Issues
 ----------------
+
+#### CLR proxy lifetime management
+
 Java proxies for CLR objects retain their managed handles until they are closed
 or Java fallback finalization runs. Finalization is not prompt enough for code
 that creates large numbers of short-lived CLR proxies. Such code should close
@@ -74,3 +77,9 @@ try (system.DateTime today = system.DateTime.getToday()) {
 Callers may also invoke `today.close()` directly. Existing code remains
 compatible and finalization remains a fallback, but high-volume proxy creation
 without `close()` can exhaust memory.
+
+#### proxygen compatibility
+
+Proxygen can build and partially run on modern .NET/CoreCLR, but it is not fully
+compatible out of the box. A replacement implementation fixing this and adding more
+features is in progress.
